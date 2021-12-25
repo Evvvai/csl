@@ -1,0 +1,178 @@
+@use 'styles/media';
+
+:root {
+  // Global
+  --color-text: #{$color-text};
+  --color-sub-text: #{$color-sub-text};
+  --color-text-invert: white;
+  --color-sub-text-invert: rgb(218, 218, 218);
+
+  // Header
+  --color-header: #{$color-header};
+  --color-header-bg: #{$color-header-bg};
+  --color-header-icon: #{$color-header-icon};
+
+  // Footer
+  --color-footer: #{$color-footer};
+  --color-footer-hover: #{$color-footer-hover};
+
+  --color-highlight: #{$color-highlight};
+
+  // Background
+  --color-background: #{$color-background};
+  --color-background-content: #{$color-background-content};
+  --color-background-highlight: #{$color-background-highlight};
+  --color-background-modal: #{$color-background-modal};
+  --color-background-modal-content: #{$color-background-modal-content};
+
+  // Auth
+  --color-auth: #{$color-auth};
+  --color-auth-bg: #{$color-auth-bg};
+  --color-auth-footer-bg: #{$color-auth-footer-bg};
+  --color-auth-input-bg: #{$color-auth-input-bg};
+
+  // Inputs
+  --color-input-bg: #{$color-input-bg};
+  --color-input-shadow: #{$color-input-shadow};
+  --color-input-border: #{$color-input-border};
+
+  --color-border: #{$color-border};
+  --color-disabled: #{$color-disabled};
+  --color-toast-bg: #{$color-toast-bg};
+
+  --color-button-bg: #{$color-button-bg};
+  --color-button-bg-hover: #{$color-button-bg-hover};
+
+  --ripple-opacity: #{$ripple-opacity};
+  --ripple-duration: #{$ripple-duration};
+  --ripple-easing: #{$ripple-easing};
+  --ripple-background: #{$ripple-background};
+
+  // Others
+  --color-error: #ff4e2f;
+  --color-success: #00a329;
+  --color-warn: #ceff2f;
+
+  --color-cart-add: #00be30;
+
+  --color-link: #70a1f0;
+  --color-link-hover: #4583e7;
+
+  --color-submit-bg-close: rgb(39, 39, 39);
+  --color-submit-bg-lock: #a1a1a1;
+  --color-submit-bg: #7289da;
+  --color-submit-bg-hover: #5468b1;
+}
+
+html[data-theme='dark'] {
+  --color-text: #{$color-text-dark};
+  --color-sub-text: #{$color-sub-text-dark};
+
+  --color-header: #{$color-header-dark};
+  --color-header-bg: #{$color-header-bg-dark};
+  --color-header-icon: #{$color-header-icon-dark};
+
+  --color-background: #{$color-background-dark};
+  --color-background-content: #{$color-background-content-dark};
+
+  --color-input-bg: #{$color-background-content-dark};
+  --color-border: #{$color-border-dark};
+  --color-disabled: #{$color-disabled-dark};
+  --color-toast-bg: #{$color-toast-bg-dark};
+
+  --color-button-bg: #{$color-button-bg-dark};
+  --color-button-bg-hover: #{$color-button-bg-hover-dark};
+
+  --ripple-background: #{$ripple-background-dark};
+}
+
+html[data-theme='blue'] {
+  --color-text: #{$color-text-blue};
+  --color-sub-text: #{$color-sub-text-blue};
+
+  --color-header: #{$color-header-blue};
+  --color-header-bg: #{$color-header-bg-blue};
+  --color-header-icon: #{$color-header-icon-blue};
+
+  --color-background: #{$color-background-blue};
+  --color-background-content: #{$color-background-content-blue};
+
+  --color-input-bg: #{$color-background-content-blue};
+  --color-border: #{$color-border-blue};
+  --color-disabled: #{$color-disabled-blue};
+  --color-toast-bg: #{$color-toast-bg-blue};
+
+  --color-button-bg: #{$color-button-bg-blue};
+  --color-button-bg-hover: #{$color-button-bg-hover-blue};
+
+  --ripple-background: #{$ripple-background-blue};
+}
+
+html {
+  // Header
+  --header-height: 48px;
+  --header-button-hover: #272727;
+  --status-bar-highlight-color: #ef4444;
+  --offline-notification-height: 20px;
+
+  // Footer
+  --footer-height-wave: 20px;
+  --footer-height-content: 40px;
+  --footer-height: calc(
+    var(--footer-height-wave) + var(--footer-height-content)
+  );
+
+  // Sidebar
+  --sidebar-width: 300px;
+
+  // Friend aside
+  --friend-aside-width: 300px;
+
+  @include media.mobile {
+    --footer-content-height: 40px;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-size: #{$font-size-base};
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  // position: fixed;
+
+  * {
+    font-family: 'Lato', sans-serif;
+  }
+}
+
+#__next {
+  background-color: var(--color-background);
+}
+
+// Scrollbar color
+::-webkit-scrollbar {
+  width: 6px;
+  height: 100%;
+  background-color: var(--color-background-content);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgb(93, 93, 93);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  // background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0);
+  border-radius: 10px;
+  background-color: transparent;
+}

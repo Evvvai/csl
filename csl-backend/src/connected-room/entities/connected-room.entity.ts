@@ -1,0 +1,49 @@
+import { ConnectedUser } from 'src/connected-user/entities/connected-user.entity';
+import { Room } from 'src/room/entities/room.entity';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+@Entity()
+@Index('FK_connected_room_connected_user', ['connectedUserId'], {})
+@Index('FK_connected_room_room', ['roomId'], {})
+export class ConnectedRoom {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  socketId: string;
+
+  @Column({ nullable: false })
+  connectedUserId: number;
+
+  @Column({ nullable: false })
+  roomId: number;
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // Relations
+
+  @ManyToOne(
+    () => ConnectedUser,
+    (connectedUser) => connectedUser.connectedRoom,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'NO ACTION',
+    },
+  )
+  @JoinColumn()
+  connectedUser: ConnectedUser;
+
+  @ManyToOne(() => Room, (room) => room.connectedRooms, {
+    onDelete: 'CASCADE',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn()
+  room: Room;
+}

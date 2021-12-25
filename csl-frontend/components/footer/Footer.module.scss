@@ -1,0 +1,40 @@
+.footer {
+  position: sticky;
+  width: 100%;
+  z-index: 10;
+  font-size: 0px;
+  height: var(--footer-height);
+
+  svg {
+    width: 100%;
+    height: var(--footer-height-wave);
+    fill: var(--color-header-bg);
+  }
+
+  &Content {
+    width: 100%;
+    height: var(--footer-height-content);
+    background-color: var(--color-header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: row;
+
+    span {
+      margin: 0 15px;
+    }
+  }
+
+  &Item {
+    color: var(--color-footer);
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-footer-hover);
+    }
+  }
+}

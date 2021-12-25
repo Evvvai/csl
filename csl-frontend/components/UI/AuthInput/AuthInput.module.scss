@@ -1,0 +1,57 @@
+.formGroup {
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 10px 0;
+
+  &__input {
+    font-size: 0.8rem;
+    display: flex;
+
+    padding: 0 10px;
+    margin: 0;
+
+    min-height: 35px;
+
+    // background-color: var(--color-input-bg);
+    background-color: var(--color-auth-input-bg);
+    border: 0px;
+    cursor: pointer;
+
+    min-height: 35px;
+    width: 100%;
+    z-index: 1;
+
+    // color: var(--color-text);
+    // outline: 1px solid var(--color-input-border);
+    color: var(--color-auth);
+    outline: 1px solid var(--color-auth-footer-bg);
+
+    border-bottom: 2px solid transparent;
+
+    &.Error {
+      outline: 1px solid var(--color-error);
+    }
+
+    &:hover {
+      cursor: text;
+      border-bottom: 2px solid var(--color-input-shadow);
+      transition: all 0.2s ease-in;
+    }
+
+    &:focus {
+      cursor: text;
+      border-bottom: 2px solid var(--color-highlight);
+      transition: all 0.2s ease-in;
+    }
+    transition: all 0.2s ease-out;
+  }
+
+  &__label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,141 @@
+.friend {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  height: 100vh;
+  padding-top: var(--header-height);
+  // background-color: var(--color-background-modal);
+  width: var(--friend-aside-width);
+
+  background-image: linear-gradient(-135deg, var(--tw-gradient-stops));
+  --tw-gradient-from: #202020;
+  --tw-gradient-stops: var(--tw-gradient-from),
+    var(--tw-gradient-to, rgba(255, 255, 255, 0));
+  --tw-gradient-to: var(--color-background-modal);
+
+  &Content {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+  }
+
+  transform: translateX(var(--friend-aside-width));
+
+  &.Open {
+    transform: translateX(0px);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+  transition: all 0.2s ease-out;
+}
+
+.title {
+  text-align: center;
+
+  h1 {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: var(--color-sub-text-invert);
+    text-transform: uppercase;
+    letter-spacing: 10px;
+  }
+}
+
+.hr {
+  &H {
+    width: 80%;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 10px auto;
+  }
+}
+
+.search {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 5px 10px;
+
+  &Input {
+    height: 25px;
+    width: 100%;
+    background-color: var(--color-background-modal-content);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-sub-text-invert);
+    padding-left: 25px;
+
+    &:focus {
+      border: 1px solid var(--color-highlight);
+    }
+  }
+
+  &Icon {
+    fill: var(--color-sub-text-invert);
+    min-height: 20px;
+    min-width: 20px;
+    cursor: pointer;
+  }
+
+  :first-child {
+    position: absolute;
+    top: 7px;
+    left: 15px;
+    pointer-events: none;
+  }
+}
+
+.friends {
+  > * {
+    display: flex;
+    flex-direction: column;
+
+    :hover {
+      background-color: var(--color-background-modal-content);
+    }
+    transition: all 0.1s ease-in-out;
+  }
+
+  &Item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 5px 10px;
+
+    color: var(--color-sub-text-invert);
+    width: 100%;
+  }
+
+  &Img {
+    border-radius: 90%;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+  }
+
+  &Info {
+    display: flex;
+    flex-direction: column;
+
+    :first-child {
+      cursor: pointer;
+    }
+  }
+}
+
+.exit {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+
+  top: 3px;
+  right: 3px;
+
+  cursor: pointer;
+
+  fill: var(--color-sub-text-invert);
+}

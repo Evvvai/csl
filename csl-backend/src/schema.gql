@@ -1,0 +1,63 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Room {
+  id: Int!
+  name: String!
+  captainId: Float!
+  maxPlayers: Float!
+  isPublic: Boolean!
+  isSearch: Boolean!
+  createdAt: DateTime!
+  udaptedAt: DateTime!
+  users: [User!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: Int!
+  steamId64: String!
+  username: String!
+  profileurl: String
+  avatarfull: String
+  avatarCustom: String
+  dashboard: String
+  dateReg: DateTime!
+  lastLogin: DateTime!
+  role: String!
+}
+
+type UserToken {
+  token: String!
+  user: User!
+}
+
+type Query {
+  users: [User!]!
+  findOne(steamid64: String!): User!
+  activeRoom: Room!
+}
+
+type Mutation {
+  setAvatar(url: String!): User!
+  setDashboard(url: String!): User!
+  auth: UserToken!
+  createRoom(input: CreateRoomInput!): Room!
+  removeRoom: Boolean!
+}
+
+input CreateRoomInput {
+  """Max Players on lobby"""
+  maxPlayers: MaxPlayers!
+}
+
+enum MaxPlayers {
+  TWO
+  THREE
+  FIVE
+}

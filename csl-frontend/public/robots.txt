@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# test-bot
+User-agent: test-bot
+Allow: /path
+Allow: /path-2
+
+# Host
+Host: https://csurf-league
+
+# Sitemaps
+Sitemap: https://csurf-league/sitemap.xml

@@ -1,0 +1,70 @@
+.setting {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  border-radius: 10px;
+  padding: 5px;
+
+  margin-right: 25%;
+  width: 50%;
+  background-color: var(--color-background-content);
+  box-shadow: 0 0 10px rgb(0 0 0 / 20%);
+
+  opacity: 0;
+  pointer-events: none;
+
+  &Content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 5px;
+
+    padding: 0 10px;
+  }
+
+  &Item {
+    cursor: pointer;
+
+    svg {
+      min-width: 20px;
+      min-height: 20px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    &.Enable {
+      svg {
+        fill: var(--color-highlight);
+        opacity: 1;
+      }
+    }
+  }
+
+  &.Active {
+    opacity: 1;
+    pointer-events: all;
+
+    transition: all 0, 2;
+  }
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.7rem;
+}
+
+.hr {
+  &H {
+    width: 90%;
+    margin: 5px auto;
+  }
+}
+
+.tip {
+  color: var(--color-sub-text-invert);
+  font-size: 0.7rem;
+}

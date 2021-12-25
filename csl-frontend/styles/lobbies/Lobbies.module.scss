@@ -1,0 +1,87 @@
+.lobbies {
+  width: 100%;
+  height: 100%;
+
+  &Content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  h1 {
+    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+  }
+
+  hr {
+    width: 50%;
+    height: 1px;
+    background-color: var(--color-border);
+    opacity: 0.5;
+    margin: 5px;
+  }
+}
+
+.item {
+  width: 200px;
+  margin: 10px;
+  padding: 5px 10px;
+  border-radius: 10px;
+
+  background-color: var(--color-background-content);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 60%);
+  cursor: pointer;
+}
+
+.lobby {
+  &Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &Hr {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 5px 0;
+  }
+
+  &Inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px;
+  }
+
+  &Player {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: red;
+    margin: 2px;
+  }
+}
