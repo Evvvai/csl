@@ -27,6 +27,8 @@ module.exports = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   env: {
+    NOT_FOUND:
+      'https://garnetgaming.net/forums/uploads/monthly_2018_11/lain-transparent-static-4.gif.abf402297aef7303cde0c2da0ebc81be.gif',
     BACKEND_URL: process.env.NEXT_APP_BACKEND_URL,
     DASHBOARD_NULL: dashboardNull,
     AVATAR_NULL: avatarNull,

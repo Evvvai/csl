@@ -19,8 +19,12 @@ import Icon from 'components/icon/Icon.component'
 import FooterWave from '../../../assets/icon/FooterWave.svg'
 import ThemeSection from './theme-section/ThemeSection.component'
 import { GiBowenKnot } from 'react-icons/gi'
+import { CgProfile } from 'react-icons/cg'
+import { AiOutlineProfile } from 'react-icons/ai'
+import { FaUserFriends } from 'react-icons/fa'
 
 // Custom hooks
+import { useFriend } from 'hooks/store/friend'
 import { useUser } from 'hooks/store/user'
 import { useOutsideClick } from 'hooks/events'
 
@@ -35,36 +39,38 @@ interface Props {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 export default function Menu(props: Props): JSX.Element {
-  const { user } = useUser()
+  const { openFriend } = useFriend()
+  const { userInfo } = useUser()
 
   const menuRef = useRef(null)
   const handleOutsideClick = () => {
     props.setOpen(false)
   }
+  const handleClickClose = () => props.setOpen(false)
 
   useOutsideClick([menuRef, props.menuButtonRef], handleOutsideClick)
 
   return (
     <div ref={menuRef} className={menu}>
       <ul>
-        <li className={profile}>
-          <Link href={'/' + user.steamId64}>
+        <li onClick={handleClickClose} className={profile}>
+          <Link href={'/' + userInfo.steamId64}>
             <a>
               <img
                 className={profileDashboard}
                 src={
-                  user.dashboard !== null
-                    ? user.dashboard
+                  userInfo.dashboard !== null
+                    ? userInfo.dashboard
                     : process.env.DASHBOARD_NULL
                 }
               />
               <div className={profileImage}>
                 <img
                   src={
-                    user.avatarCustom !== null
-                      ? user.avatarCustom
-                      : user.avatarfull
-                      ? user.avatarfull
+                    userInfo.avatarCustom !== null
+                      ? userInfo.avatarCustom
+                      : userInfo.avatarfull
+                      ? userInfo.avatarfull
                       : process.env.AVATAR_NULL
                   }
                 />
@@ -73,21 +79,23 @@ export default function Menu(props: Props): JSX.Element {
             </a>
           </Link>
         </li>
-        <li className={item}>
-          <Link href={'/'}>
+        <li onClick={handleClickClose} className={item}>
+          <Link href={'/' + userInfo.steamId64}>
             <a>
-              <GiBowenKnot className={itemIcon} />
-              <span>Not Implimented</span>
+              <AiOutlineProfile className={itemIcon} />
+              <span>Profile</span>
             </a>
           </Link>
         </li>
-        <li className={item}>
-          <Link href={'/'}>
-            <a>
-              <GiBowenKnot className={itemIcon} />
-              <span>Not Implimented</span>
-            </a>
-          </Link>
+        <li
+          onClick={(e) => {
+            openFriend()
+            props.setOpen(false)
+          }}
+          className={item}
+        >
+          <FaUserFriends className={itemIcon} />
+          <span>Friends</span>
         </li>
         <li className={item}>
           <Link href={'/'}>

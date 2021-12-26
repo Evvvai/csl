@@ -40,11 +40,11 @@ interface Props {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function DashboardEdit(props: Props): JSX.Element {
   const { changeDashboard } = useUserPreference()
-  const { user } = useUser()
+  const { userInfo } = useUser()
 
   const [image, setImage] = useState<any>({
     image: null,
-    imageUrl: user?.dashboard,
+    imageUrl: userInfo?.dashboard,
   })
   const [progress, setProgress] = useState<any>(0)
 
@@ -69,7 +69,7 @@ export default function DashboardEdit(props: Props): JSX.Element {
   }
 
   const clickUploadHandler = (e: any) => {
-    const storageRef = ref(storage, `dashboard/${user.id.toString()}`)
+    const storageRef = ref(storage, `dashboard/${userInfo.id.toString()}`)
     const uploadTask = uploadBytesResumable(storageRef, image.image)
 
     if (!verifyImage()) return
@@ -95,7 +95,7 @@ export default function DashboardEdit(props: Props): JSX.Element {
   }
 
   const verifyImage = () => {
-    if (user.dashboard !== image.imageUrl && progress === 0) return true
+    if (userInfo.dashboard !== image.imageUrl && progress === 0) return true
 
     return false
   }

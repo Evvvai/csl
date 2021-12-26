@@ -20,7 +20,7 @@ export const useUser = () => {
     ActionCreators.actions,
     dispatch
   )
-  const { isLoggedIn, user } = useTypesSelector((state) => state.user)
+  const { isLoggedIn, userInfo } = useTypesSelector((state) => state.user)
 
   const logOut = useCallback(() => {
     removeUserSetting()
@@ -54,5 +54,5 @@ export const useUser = () => {
     setUserSetting(data.user)
   }, [])
 
-  return { isLoggedIn, user, authUser, logOut, setUser }
+  return { isLoggedIn, userInfo, authUser, logOut, setUser }
 }

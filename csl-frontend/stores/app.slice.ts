@@ -24,12 +24,6 @@ const appSlice = createSlice({
     closeMenu: (state) => {
       state.isMenuOpen = false
     },
-    openFriend: (state) => {
-      state.isFriendOpen = true
-    },
-    closeFriend: (state) => {
-      state.isFriendOpen = false
-    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {

@@ -4,6 +4,8 @@ import Head from 'next/head'
 import { ThemeProvider } from '../contexts/theme' // Theme Use Context
 import { wrapper } from 'stores'
 import Cookies, { parseCookies } from 'nookies'
+import { useEffect } from 'react'
+import { setUserSetting } from 'stores/user.slice'
 
 // Layouts
 import MainLayout from 'components/layouts/Main.layout'
@@ -13,13 +15,13 @@ import Header from '../components/header/Header.component'
 import Footer from 'components/footer/Footer.component'
 
 // Custom hooks
-import { setUserSetting } from 'stores/user.slice'
-import { GraphQLClient } from 'graphql-request'
-import { AUTH } from 'types/graphql/mutation'
-import { useEffect } from 'react'
+import { useApp } from 'hooks/store/app'
 import { useUser } from 'hooks/store/user'
+
+// Utils
+import { GraphQLClient } from 'graphql-request'
 import getBearerToken from 'utils/getBearerToken'
-import { useApp } from '../hooks/store/app/useApp'
+import { AUTH } from 'types/graphql/mutation'
 
 /////////////////////////////////////////////////////////////////////////////////////
 function MyApp({ Component, pageProps }: AppProps) {

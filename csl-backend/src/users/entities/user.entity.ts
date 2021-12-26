@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { ConnectedRoom } from 'src/connected-room/entities/connected-room.entity';
 import { ConnectedUser } from 'src/connected-user/entities/connected-user.entity';
+import { FriendsUser } from 'src/friends-user/entities/friends-user.entity';
 import { RoomsUsers } from 'src/rooms-users/entities/rooms-users.entity';
 import {
   Column,
@@ -14,11 +15,6 @@ import { Role } from './role.enum';
 @ObjectType()
 @Entity({ name: 'users' })
 export class User {
-  // Relations
-  User(arg0: string, User: any) {
-    ///////////////
-    throw new Error('Method not implemented.');
-  }
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
@@ -78,4 +74,11 @@ export class User {
 
   @OneToMany(() => RoomsUsers, (roomsUsers) => roomsUsers.user)
   roomsUsers: RoomsUsers[];
+
+  // Idk
+  @OneToMany(() => FriendsUser, (friendsUser) => friendsUser.user1)
+  friend1: FriendsUser[];
+
+  @OneToMany(() => FriendsUser, (friendsUser) => friendsUser.user2)
+  friend2: FriendsUser[];
 }

@@ -26,6 +26,7 @@ import DashboardEditModal from 'components/profile/DasboardEdit/DashboardEdit.co
 import FooterWaveIcon from '../assets/icon/FooterWave.svg'
 
 // Custom hooks
+import { useUser } from '../hooks/store/user/useUser'
 
 // Utils
 import cn from 'classnames'
@@ -35,11 +36,13 @@ import { Portal } from 'utils/portal'
 import Modal from 'components/UI/Modal/Modal.component'
 
 interface Props {
-  user: User
+  userData: User
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-const Profile: NextPage<Props> = ({ user }) => {
+const Profile: NextPage<Props> = ({ userData }) => {
+  const { userInfo } = useUser()
+
   const [isAvatarEdit, setIsAvatarEdit] = useState<boolean>(false)
   const [isDashboardEdit, setIsDashboardEdit] = useState<boolean>(false)
 
@@ -50,25 +53,27 @@ const Profile: NextPage<Props> = ({ user }) => {
         <div className={Dashboard}>
           <img
             src={
-              user.dashboard !== null
-                ? user.dashboard
+              userData.dashboard !== null
+                ? userData.dashboard
                 : process.env.DASHBOARD_NULL
             }
             alt="nope"
           ></img>
           <div className={DashboardBack} />
 
-          <div
-            onClick={(e) => setIsDashboardEdit(true)}
-            className={DashboardEdit}
-          >
-            <Icon asset={'Edit'} />
-            <Portal selector="#modal">
-              <Modal isOpen={isDashboardEdit} setOpen={setIsDashboardEdit}>
-                <DashboardEditModal setOpen={setIsDashboardEdit} />
-              </Modal>
-            </Portal>
-          </div>
+          {userData.id === userInfo?.id && (
+            <div
+              onClick={(e) => setIsDashboardEdit(true)}
+              className={DashboardEdit}
+            >
+              <Icon asset={'Edit'} />
+              <Portal selector="#modal">
+                <Modal isOpen={isDashboardEdit} setOpen={setIsDashboardEdit}>
+                  <DashboardEditModal setOpen={setIsDashboardEdit} />
+                </Modal>
+              </Portal>
+            </div>
+          )}
         </div>
 
         <div className={info}>
@@ -77,47 +82,32 @@ const Profile: NextPage<Props> = ({ user }) => {
             <img
               className={AvatarImage}
               src={
-                user.avatarCustom !== null
-                  ? user.avatarCustom
-                  : user.avatarfull
-                  ? user.avatarfull
+                userData.avatarCustom !== null
+                  ? userData.avatarCustom
+                  : userData.avatarfull
+                  ? userData.avatarfull
                   : process.env.AVATAR_NULL
               }
               alt="nope"
             ></img>
-            <div onClick={(e) => setIsAvatarEdit(true)} className={AvatarEdit}>
-              <Icon asset={'Edit'} />
-              <Portal selector="#modal">
-                <Modal isOpen={isAvatarEdit} setOpen={setIsAvatarEdit}>
-                  <AvatarEditModal setOpen={setIsAvatarEdit} />
-                </Modal>
-              </Portal>
-            </div>
+            {userData.id === userInfo?.id && (
+              <div
+                onClick={(e) => setIsAvatarEdit(true)}
+                className={AvatarEdit}
+              >
+                <Icon asset={'Edit'} />
+                <Portal selector="#modal">
+                  <Modal isOpen={isAvatarEdit} setOpen={setIsAvatarEdit}>
+                    <AvatarEditModal setOpen={setIsAvatarEdit} />
+                  </Modal>
+                </Portal>
+              </div>
+            )}
           </div>
-          <span className={Name}>{user.username}</span>
+          <span className={Name}>{userData.username}</span>
         </div>
         <FooterWaveIcon className={wave} />
         <div className={profileInner}>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
-          <span>blank</span>
           <span>blank</span>
         </div>
       </div>
@@ -134,7 +124,7 @@ export const getServerSideProps = async (ctx) => {
 
     return {
       props: {
-        user: data.findOne,
+        userData: data.findOne,
       },
     }
   } catch (err) {

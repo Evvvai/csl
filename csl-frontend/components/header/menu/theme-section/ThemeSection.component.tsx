@@ -10,8 +10,6 @@ import { IoMdRainy } from 'react-icons/io'
 import { GiNightSleep } from 'react-icons/gi'
 
 // Custom hooks
-import { useUser } from 'hooks/store/user'
-import { useOutsideClick } from 'hooks/events'
 import { useTheme } from 'hooks/theme'
 
 // Utils

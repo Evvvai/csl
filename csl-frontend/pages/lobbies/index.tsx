@@ -55,9 +55,9 @@ const Lobbies = (props: Props) => {
                 </div>
                 <hr className={lobbyHr} />
                 <div className={lobbyInner}>
-                  <div className={lobbyPlayer}>1</div>
+                  {/* <div className={lobbyPlayer}>1</div>
                   <div className={lobbyPlayer}>2</div>
-                  <div className={lobbyPlayer}>3</div>
+                  <div className={lobbyPlayer}>3</div> */}
                 </div>
               </div>
             )

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserI } from 'src/users/entities/user.interface';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ConnectedUser } from './entities/connected-user.entity';
 import { ConnectedUserI } from './entities/connected-user.interface';
 
@@ -12,6 +12,14 @@ export class ConnectedUserService {
     private connectedUsersRepository: Repository<ConnectedUser>,
   ) {}
 
+  async getConnects(userIds: number[]): Promise<ConnectedUser[]> {
+    return this.connectedUsersRepository.find({
+      where: {
+        userId: In(userIds),
+      },
+    });
+  }
+
   async findConnect(user: UserI): Promise<ConnectedUser[]> {
     return this.connectedUsersRepository.find({
       where: { userId: user.id },
@@ -19,7 +27,8 @@ export class ConnectedUserService {
   }
 
   async connectUser(connectUser: ConnectedUserI): Promise<ConnectedUser> {
-    return this.connectedUsersRepository.save(connectUser);
+    const connect = await this.connectedUsersRepository.create(connectUser);
+    return this.connectedUsersRepository.save(connect);
   }
 
   async deleteBySocketId(socketId: string) {

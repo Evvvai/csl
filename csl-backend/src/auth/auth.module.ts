@@ -12,6 +12,7 @@ import { SteamAPIAuthService } from './steamapi-auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { SteamStrategy } from './strategies/steam.strategy';
 import { AuthController } from './auth.controller';
+import { FriendsUserModule } from 'src/friends-user/friends-user.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthController } from './auth.controller';
       }),
     }),
     UsersModule,
+    FriendsUserModule,
   ],
   controllers: [AuthController],
   providers: [

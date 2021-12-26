@@ -2,6 +2,7 @@
   position: fixed;
   top: 0;
   right: 0;
+  z-index: 100;
 
   height: 100vh;
   padding-top: var(--header-height);
@@ -89,18 +90,23 @@
   }
 }
 
-.friends {
+.cFriends {
   > * {
     display: flex;
     flex-direction: column;
 
     :hover {
       background-color: var(--color-background-modal-content);
+
+      .cFriendsInvite {
+        opacity: 1;
+      }
     }
     transition: all 0.1s ease-in-out;
   }
 
   &Item {
+    position: relative;
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -111,19 +117,58 @@
   }
 
   &Img {
+    position: relative;
+
+    img {
+      border-radius: 90%;
+      height: 40px;
+      width: 40px;
+      border-radius: 90%;
+      cursor: pointer;
+      object-fit: cover;
+    }
+  }
+
+  &Status {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 8px;
+    height: 8px;
     border-radius: 90%;
-    height: 40px;
-    width: 40px;
-    cursor: pointer;
+    background-color: var(--offline);
+    border: 1px solid var(--color-border);
+    z-index: 100;
+    transform: scale(1);
+
+    &.Online {
+      background-color: var(--online);
+      transform: scale(1.05);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 3.775);
+    }
+    transition: all 0.2s ease-out;
   }
 
   &Info {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
 
     :first-child {
       cursor: pointer;
     }
+  }
+
+  &Invite {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+
+    opacity: 0.5;
+
+    cursor: pointer;
   }
 }
 

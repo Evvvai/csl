@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction, Dispatch } from '@reduxjs/toolkit'
-import { User, UserState } from 'types/store/user/user'
 import { browserStorage } from 'utils/browser'
 import { HYDRATE } from 'next-redux-wrapper'
+import { User, UserState } from '@store'
 
 const initialState: UserState = {
   isLoggedIn: false,
-  user: {} as User,
+  userInfo: {} as User,
 }
 
 // Slice
@@ -16,25 +16,25 @@ const userSlice = createSlice({
   reducers: {
     setUserSetting: (state, { payload }: PayloadAction<User>) => {
       state.isLoggedIn = true
-      state.user = payload
+      state.userInfo = payload
     },
     removeUserSetting: (state) => {
       browserStorage.removeItem('jwt')
       state.isLoggedIn = false
-      state.user = {} as User
+      state.userInfo = {} as User
     },
     setDashboard: (state, { payload }: PayloadAction<string>) => {
-      state.user.dashboard = payload
+      state.userInfo.dashboard = payload
     },
     setAvatar: (state, { payload }: PayloadAction<string>) => {
-      state.user.avatarCustom = payload
+      state.userInfo.avatarCustom = payload
     },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload.user,
+        ...action.payload.userInfo,
       }
     },
   },

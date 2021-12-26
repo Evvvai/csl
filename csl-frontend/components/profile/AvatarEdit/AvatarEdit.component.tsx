@@ -40,11 +40,13 @@ interface Props {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function AvatarEdit(props: Props): JSX.Element {
   const { changeAvatar } = useUserPreference()
-  const { user } = useUser()
+  const { userInfo } = useUser()
 
   const [image, setImage] = useState<any>({
     image: null,
-    imageUrl: user?.avatarCustom ? user.avatarCustom : user.avatarfull,
+    imageUrl: userInfo?.avatarCustom
+      ? userInfo.avatarCustom
+      : userInfo.avatarfull,
   })
   const [progress, setProgress] = useState<any>(0)
 
@@ -69,7 +71,7 @@ export default function AvatarEdit(props: Props): JSX.Element {
   }
 
   const clickUploadHandler = (e: any) => {
-    const storageRef = ref(storage, `avatar/${user.id.toString()}`)
+    const storageRef = ref(storage, `avatar/${userInfo.id.toString()}`)
     const uploadTask = uploadBytesResumable(storageRef, image.image)
 
     if (!verifyImage()) return
@@ -96,8 +98,8 @@ export default function AvatarEdit(props: Props): JSX.Element {
 
   const verifyImage = () => {
     if (
-      user.avatarCustom !== image.imageUrl &&
-      user.avatarfull !== image.imageUrl &&
+      userInfo.avatarCustom !== image.imageUrl &&
+      userInfo.avatarfull !== image.imageUrl &&
       progress === 0
     )
       return true

@@ -24,7 +24,7 @@ export const clientHandle = async (ql, variables) => {
   try {
     data = await client.request(ql, variables)
   } catch (error) {
-    console.log('error', error)
+    // console.log('error', error)
 
     errors = error
   }

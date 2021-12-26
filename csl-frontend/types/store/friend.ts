@@ -1,3 +1,12 @@
+import { User } from '@store'
+
 export interface FriendState {
-  isLoad: boolean
+  isFriendLoad: boolean
+  isFriendOpen: boolean
+
+  friends: Friend[]
+}
+
+export interface Friend extends User {
+  status: boolean
 }

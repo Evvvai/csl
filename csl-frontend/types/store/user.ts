@@ -1,6 +1,6 @@
 export interface UserState {
   isLoggedIn: boolean
-  user: User
+  userInfo: User
 }
 
 export interface User {

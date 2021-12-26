@@ -109,6 +109,9 @@ html[data-theme='blue'] {
 }
 
 html {
+  --offline: gray;
+  --online: rgb(126, 255, 175);
+
   // Header
   --header-height: 48px;
   --header-button-hover: #272727;

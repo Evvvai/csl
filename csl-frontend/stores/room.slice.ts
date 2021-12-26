@@ -33,6 +33,14 @@ const roomSlice = createSlice({
       state.currentRoom = payload
       state.isLoading = false
     },
+    changeSearchStatus: (state, { payload }: PayloadAction<boolean>) => {
+      // state.currentRoom = payload
+      // state.isLoading = false
+    },
+    syncRoom: (state, { payload }: PayloadAction<Room>) => {
+      state.currentRoom = payload
+      state.isLoading = false
+    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {

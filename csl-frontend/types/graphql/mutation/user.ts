@@ -19,3 +19,19 @@ export const SET_DASHBOARD = gql`
     }
   }
 `
+export const USER_NEW_FRIENDS = gql`
+  mutation {
+    userNewFriends {
+      id
+      steamId64
+      username
+      profileurl
+      avatarfull
+      avatarCustom
+      dashboard
+      dateReg
+      lastLogin
+      role
+    }
+  }
+`

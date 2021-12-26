@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoomI } from 'src/room/entities/room.interface';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ConnectedRoom } from './entities/connected-room.entity';
 import { ConnectedRoomI } from './entities/connected-room.interface';
 
@@ -11,6 +11,12 @@ export class ConnectedRoomService {
     @InjectRepository(ConnectedRoom)
     private connectedRoomRepository: Repository<ConnectedRoom>,
   ) {}
+
+  async findRoomBySocketIds(socketId: string[]): Promise<ConnectedRoom> {
+    return this.connectedRoomRepository.findOne({
+      where: { socketId: In(socketId) },
+    });
+  }
 
   async create(connectedRoom: ConnectedRoomI): Promise<ConnectedRoomI> {
     return this.connectedRoomRepository.save(connectedRoom);

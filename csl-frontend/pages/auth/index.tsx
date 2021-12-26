@@ -19,16 +19,29 @@ interface Props {}
 
 /////////////////////////////////////////////////////////////////////////////////////
 const Auth = (props: Props) => {
-  const [isValid, setIsValid] = useState<boolean | null>(null)
   const { authUser } = useUser()
+
+  const [isChecked, setisChecked] = useState<boolean>(false)
+  const [isValid, setIsValid] = useState<boolean | null>(null)
+
   const router = useRouter()
   const token: any = router.query.token
 
   useEffect(() => {
     if (token) {
-      ;(async () => setIsValid(await authUser('Bearer ' + token)))()
+      authUser('Bearer ' + token).then((x) => {
+        setIsValid(x)
+        setisChecked(true)
+      })
     }
   }, [token])
+
+  // Some logic
+  useEffect(() => {
+    if (isChecked) {
+      router.push('/')
+    }
+  }, [isChecked])
 
   return (
     <Fragment>

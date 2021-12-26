@@ -32,9 +32,9 @@ import { MdNotificationsActive } from 'react-icons/md'
 import { GiBowenKnot } from 'react-icons/gi'
 
 // Custom hooks
-import { useNetworkChange } from '../../hooks/events/useNetworkChange'
+import { useFriend } from 'hooks/store/friend'
 import { useUser } from 'hooks/store/user'
-import { useFriend } from 'hooks/store/app'
+import { useNetworkChange } from '../../hooks/events/useNetworkChange'
 
 // Utils
 import { Portal } from 'utils/portal'
@@ -46,7 +46,7 @@ import Menu from './menu/Menu.component'
 export default function Header(): JSX.Element {
   // const { isOnline } = useNetworkChange() // For pwa
   const { isFriendOpen, openFriend, closeFriend } = useFriend()
-  const { isLoggedIn, user } = useUser()
+  const { isLoggedIn, userInfo } = useUser()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
@@ -120,15 +120,15 @@ export default function Header(): JSX.Element {
                         [Active]: isMenuOpen,
                       })}
                     >
-                      <Link href={'/' + user.steamId64}>
+                      <Link href={'/' + userInfo.steamId64}>
                         <a>
                           <img
                             className={menuProfileAvatar}
                             src={
-                              user.avatarCustom !== null
-                                ? user.avatarCustom
-                                : user.avatarfull
-                                ? user.avatarfull
+                              userInfo.avatarCustom !== null
+                                ? userInfo.avatarCustom
+                                : userInfo.avatarfull
+                                ? userInfo.avatarfull
                                 : process.env.AVATAR_NULL
                             }
                             alt="Evai"

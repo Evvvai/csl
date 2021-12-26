@@ -9,6 +9,11 @@ export class SteamAPIAuthService {
 
   constructor(private readonly httpService: HttpService) {}
 
+  public async getUserFriends(steamId: string): Promise<GetPlayerFriends[]> {
+    this.steamId = steamId;
+    return this.getPlayerFriends();
+  }
+
   public async getUserInfo(steamId: string): Promise<GetPlayerSummaries> {
     this.steamId = steamId;
     return await this.getPlayerSummaries();
@@ -85,6 +90,14 @@ export class SteamAPIAuthService {
   //   return game.playtime_forever < Config.MIN_GAME_HOURS * 60;
   // }
 
+  private async getPlayerFriends(): Promise<GetPlayerFriends[]> {
+    const url = `https://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${process.env.STEAM_API_KEY}&steamid=${this.steamId}&relationship=friend`;
+
+    const data = (await lastValueFrom(this.httpService.get<any>(url))).data;
+
+    return data.friendslist.friends;
+  }
+
   private async getPlayerSummaries(): Promise<GetPlayerSummaries> {
     const url = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v002/?key=${process.env.STEAM_API_KEY}&steamids=${this.steamId}`;
 
@@ -111,4 +124,10 @@ export interface GetPlayerSummaries {
   primaryclanid: string;
   timecreated: number;
   personastateflags: number;
+}
+
+export interface GetPlayerFriends {
+  steamid: string;
+  relationship: string;
+  friend_since: number;
 }

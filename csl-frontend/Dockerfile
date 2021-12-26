@@ -1,5 +1,6 @@
 FROM node
 
+# Yarn
 RUN yarn install
 
 ENV NODE_ENV development

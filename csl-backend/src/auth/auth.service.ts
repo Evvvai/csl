@@ -7,6 +7,7 @@ import { CLIENT_HOST } from '@environments';
 import { JwtDto } from './dto/jwt.dto';
 import { User } from 'src/users/entities/user.entity';
 import { SteamAPIAuthService } from './steamapi-auth.service';
+import { FriendsUserService } from 'src/friends-user/friends-user.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private usersService: UsersService,
     private steamAPIAuthService: SteamAPIAuthService,
+    private friendsUserService: FriendsUserService,
   ) {}
 
   public async auth(user: User): Promise<UserToken> {
@@ -51,16 +53,36 @@ export class AuthService {
 
   // Steam validate
   public async steamValidation(req: any, profile: any): Promise<User | null> {
+    console.log('profile.steamid', profile.id);
+
     let user = await this.usersService.findUserBySteamId64(profile.id);
+
     if (!user) {
       if (!(await this.steamAPIAuthService.canUserRegister(profile.id))) {
         return null;
       }
+      console.log('aaa');
+
       const userProfile = await this.steamAPIAuthService.getUserInfo(
-        user.steamId64,
+        profile.id,
       );
 
       user = await this.usersService.registerUser(userProfile);
+
+      const userFriends = await this.steamAPIAuthService.getUserFriends(
+        profile.id,
+      );
+
+      if (userFriends) {
+        const friendsSteamid = userFriends.map((x) => x.steamid);
+        const friends = await this.usersService.getAllPossibleFriends(
+          user,
+          friendsSteamid,
+        );
+        if (friends) {
+          this.friendsUserService.addFriends(user, friends);
+        }
+      }
     }
 
     return user;

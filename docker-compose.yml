@@ -18,6 +18,7 @@ services:
     build:
       context: ./csurf-league-backend
       dockerfile: Dockerfile
+      target: development
     environment:
       PORT: ${PORT_API}
       POSTGRES_PORT: ${PORT_DB}
@@ -49,6 +50,7 @@ services:
     build:
       context: ./csurf-league-frontend
       dockerfile: Dockerfile
+      target: development
     environment:
       NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
       NEXT_BACKEND_URL: ${NEXT_BACKEND_URL}

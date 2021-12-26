@@ -7,6 +7,7 @@ import { CtxUser } from 'src/auth/decorators/ctx-user.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from './entities/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { UserI } from './entities/user.interface';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -24,6 +25,11 @@ export class UsersResolver {
     return this.usersService.findUserBySteamId64(steamid64);
   }
 
+  @Query(() => [User])
+  friends(@Args('userId') userId: number): Promise<User[]> {
+    return this.usersService.getAllFriends(userId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Mutation(() => User)
   setAvatar(@CtxUser() user: User, @Args('url') url: string): Promise<User> {
@@ -34,5 +40,11 @@ export class UsersResolver {
   @Mutation(() => User)
   setDashboard(@CtxUser() user: User, @Args('url') url: string): Promise<User> {
     return this.usersService.updateDashboard(user, url);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => [User])
+  userNewFriends(@CtxUser() user: User) {
+    return this.usersService.updateFriends(user);
   }
 }

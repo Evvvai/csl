@@ -7,21 +7,18 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
 @Index('FK_connected_room_connected_user', ['connectedUserId'], {})
 @Index('FK_connected_room_room', ['roomId'], {})
 export class ConnectedRoom {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  socketId: string;
-
-  @Column({ nullable: false })
+  @PrimaryColumn({ nullable: false })
   connectedUserId: number;
+
+  @PrimaryColumn({ nullable: false })
+  socketId: string;
 
   @Column({ nullable: false })
   roomId: number;

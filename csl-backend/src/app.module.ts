@@ -14,6 +14,7 @@ import { RoomModule } from './room/room.module';
 import { ConnectedUserModule } from './connected-user/connected-user.module';
 import { ConnectedRoomModule } from './connected-room/connected-room.module';
 import { RoomsUsersModule } from './rooms-users/rooms-users.module';
+import { FriendsUserModule } from './friends-user/friends-user.module';
 
 // Entity
 import { User } from './users/entities/user.entity';
@@ -21,6 +22,7 @@ import { Room } from './room/entities/room.entity';
 import { ConnectedRoom } from './connected-room/entities/connected-room.entity';
 import { ConnectedUser } from './connected-user/entities/connected-user.entity';
 import { RoomsUsers } from './rooms-users/entities/rooms-users.entity';
+import { FriendsUser } from './friends-user/entities/friends-user.entity';
 
 @Module({
   imports: [
@@ -33,9 +35,15 @@ import { RoomsUsers } from './rooms-users/entities/rooms-users.entity';
     TypeOrmModule.forRoot({
       ...TYPEORM_MAIN,
       synchronize: NODE_ENV === 'production' ? false : true,
-      entities: [User, ConnectedUser, Room, ConnectedRoom, RoomsUsers],
+      entities: [
+        User,
+        ConnectedUser,
+        Room,
+        ConnectedRoom,
+        RoomsUsers,
+        FriendsUser,
+      ],
     }),
-
     UsersModule,
     AuthModule,
     SocketModule,
@@ -43,6 +51,7 @@ import { RoomsUsers } from './rooms-users/entities/rooms-users.entity';
     ConnectedRoomModule,
     ConnectedUserModule,
     RoomsUsersModule,
+    FriendsUserModule,
   ],
   providers: [
     {
