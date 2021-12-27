@@ -25,16 +25,17 @@
 
     span {
       margin: 0 15px;
+      color: var(--color-sub-text);
     }
   }
 
   &Item {
-    color: var(--color-footer);
+    color: var(--color-sub-text);
     cursor: pointer;
     text-decoration: none;
 
     &:hover {
-      color: var(--color-footer-hover);
+      color: var(--color-text);
     }
   }
 }

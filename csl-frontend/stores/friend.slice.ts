@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Friend, FriendState, User } from '@store'
+import { Friend, FriendState, LobbyInvites, Room, User } from '@store'
 import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState: FriendState = {
@@ -7,6 +7,7 @@ const initialState: FriendState = {
   isFriendOpen: false,
 
   friends: [],
+  invitedFriends: [],
 }
 
 // Slice
@@ -30,16 +31,29 @@ const friendSlice = createSlice({
     },
     friendOnline: (state, { payload }: PayloadAction<number>) => {
       state.friends = state.friends.map((val) => {
-        if (val.id === payload) val.status = true
+        if (val.id === payload) val.online = true
         return val
       })
     },
     friendOffline: (state, { payload }: PayloadAction<number>) => {
       state.friends = state.friends.map((val) => {
-        if (val.id === payload) val.status = false
+        if (val.id === payload) val.online = false
         return val
       })
     },
+    sendedInvite: (state, { payload }: PayloadAction<LobbyInvites>) => {
+      state.invitedFriends.push(payload.user)
+    },
+    removedInvite: (state, { payload }: PayloadAction<LobbyInvites>) => {
+      state.invitedFriends = state.invitedFriends.filter(
+        (invite) => invite.id !== payload?.user.id
+      )
+    },
+    // syncRemoveInvite: (state, { payload }: PayloadAction<LobbyInvites>) => {
+    //   state.invitedFriends = state.invitedFriends.filter(
+    //     (invite) => invite.id !== payload.user.id
+    //   )
+    // },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {

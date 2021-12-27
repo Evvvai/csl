@@ -22,6 +22,8 @@ const {
   headerUl,
   headerLi,
   hrV,
+  invite,
+  inviteActive,
 } = styles
 
 // Components
@@ -34,6 +36,7 @@ import { GiBowenKnot } from 'react-icons/gi'
 // Custom hooks
 import { useFriend } from 'hooks/store/friend'
 import { useUser } from 'hooks/store/user'
+import { useNotification } from 'hooks/store/notification'
 import { useNetworkChange } from '../../hooks/events/useNetworkChange'
 
 // Utils
@@ -46,6 +49,13 @@ import Menu from './menu/Menu.component'
 export default function Header(): JSX.Element {
   // const { isOnline } = useNetworkChange() // For pwa
   const { isFriendOpen, openFriend, closeFriend } = useFriend()
+  const {
+    isNotificationOpen,
+    openNotification,
+    closeNotification,
+    lobbyInvites,
+  } = useNotification()
+
   const { isLoggedIn, userInfo } = useUser()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -61,6 +71,21 @@ export default function Header(): JSX.Element {
       <ChevronIcon />
     </div>
   ))
+
+  const handleClickNotification = () => {
+    if (isNotificationOpen) closeNotification()
+    else {
+      openNotification()
+      closeFriend()
+    }
+  }
+  const handleClickFriend = () => {
+    if (isFriendOpen) closeFriend()
+    else {
+      openFriend()
+      closeNotification()
+    }
+  }
 
   return (
     <Fragment>
@@ -102,15 +127,17 @@ export default function Header(): JSX.Element {
             <ul className={headerUl}>
               {isLoggedIn ? (
                 <Fragment>
-                  <li className={headerLi}>
+                  <li className={headerLi} onClick={handleClickNotification}>
                     <MdNotificationsActive />
+                    <div
+                      className={cn(invite, {
+                        [inviteActive]: lobbyInvites.length > 0,
+                      })}
+                    >
+                      {lobbyInvites.length}
+                    </div>
                   </li>
-                  <li
-                    onClick={() =>
-                      isFriendOpen ? closeFriend() : openFriend()
-                    }
-                    className={headerLi}
-                  >
+                  <li className={headerLi} onClick={handleClickFriend}>
                     <FaUserFriends />
                   </li>
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Room, RoomState } from '@store'
+import { Room, RoomState, User } from '@store'
 import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState: RoomState = {
@@ -35,11 +35,17 @@ const roomSlice = createSlice({
     },
     changeSearchStatus: (state, { payload }: PayloadAction<boolean>) => {
       // state.currentRoom = payload
-      // state.isLoading = false
     },
     syncRoom: (state, { payload }: PayloadAction<Room>) => {
       state.currentRoom = payload
-      state.isLoading = false
+    },
+    addUser: (state, { payload }: PayloadAction<User>) => {
+      state.currentRoom.users.push(payload)
+    },
+    removeUser: (state, { payload }: PayloadAction<User>) => {
+      state.currentRoom.users = state.currentRoom.users.filter(
+        (user) => user.id !== payload.id
+      )
     },
   },
   extraReducers: {

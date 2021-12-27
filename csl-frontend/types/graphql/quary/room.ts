@@ -8,7 +8,8 @@ export const ACTIVE_ROOM = gql`
       captainId
       maxPlayers
       isPublic
-      isSearch
+      isShare
+      status
       createdAt
       udaptedAt
       users {

@@ -11,6 +11,7 @@ $color-text: #262728;
 $color-sub-text: #797979;
 $color-header: #e0e0e0;
 $color-header-bg: #111111;
+$color-header-highlight-bg: #232325;
 $color-header-icon: #8b8c8d;
 $color-footer: #8b8c8d;
 $color-footer-hover: #6db6ff;
@@ -53,13 +54,29 @@ $ripple-background: radial-gradient(
 
 // Dark theme
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Global
 $color-text-dark: #e4e4e4;
 $color-sub-text-dark: #6d6e6f;
+$color-text-invert-dark: #e4e4e4;
+$color-sub-text-invert-dark: #6d6e6f;
+
+// Header
 $color-header-dark: #e0e0e0;
 $color-header-bg-dark: #111111;
+$color-header-highlight-bg-dark: #232325;
 $color-header-icon-dark: #babcbe;
+
+// Footer
+$color-footer-dark: #1e1f20;
+$color-footer-hover-dark: #161718;
+
+// Background
 $color-background-dark: #1e1f20;
 $color-background-content-dark: #161718;
+$color-background-highlight-dark: darken($color-background-content-dark, 5%);
+$color-background-modal-dark: rgb(22, 22, 22);
+$color-background-modal-content-dark: darken($color-background-modal-dark, 5%);
+
 $color-input-bg-dark: $color-background-content-dark;
 $color-border-dark: #4747478f;
 $color-disabled-dark: #c5c8ce;
@@ -80,13 +97,30 @@ $ripple-background-dark: radial-gradient(
 
 // Blue theme
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Global
 $color-text-blue: #e4e4e4;
 $color-sub-text-blue: #6d6e6f;
+$color-text-invert-blue: #e4e4e4;
+$color-sub-text-invert-blue: #6d6e6f;
+
+// Header
 $color-header-blue: #e0e0e0;
+$color-header-highlight-gblue: #e0e0e0;
 $color-header-bg-blue: #161b22;
+$color-header-highlight-bg-blue: #1f2936;
 $color-header-icon-blue: #babcbe;
+
+// Footer
+$color-footer-blue: #161b22;
+$color-footer-hover-blue: #e0e0e0;
+
+// Background
 $color-background-blue: #0d1117;
 $color-background-content-blue: #161b22;
+$color-background-highlight-blue: darken($color-background-content-blue, 5%);
+$color-background-modal-blue: #1b222c;
+$color-background-modal-content-blue: darken($color-background-modal-blue, 5%);
+
 $color-input-bg-blue: $color-background-content-blue;
 $color-border-blue: #4747478f;
 $color-disabled-blue: #c5c8ce;

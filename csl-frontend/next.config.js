@@ -3,10 +3,10 @@
 const path = require('path')
 
 const avatarNull =
-  'https://firebasestorage.googleapis.com/v0/b/trick-a871a.appspot.com/o/image%2Fdashboard.gif?alt=media&token=e2bb410b-bde1-475d-9baa-bfd9a71f6f11'
+  'https://firebasestorage.googleapis.com/v0/b/csleague-2ecff.appspot.com/o/avatar%2Favatar.gif?alt=media&token=b75ff4ef-2142-465c-b44b-a4a1ed9230e9'
 
 const dashboardNull =
-  'https://firebasestorage.googleapis.com/v0/b/csleague-2ecff.appspot.com/o/dashboard%2F1?alt=media&token=31a8ceb5-ead2-4d23-b48a-51fb03aa3e9a'
+  'https://firebasestorage.googleapis.com/v0/b/csleague-2ecff.appspot.com/o/dashboard%2Fdashboard.jpg?alt=media&token=455fd849-d65f-4142-956c-e5913668bcf3'
 
 // GenerateSitemap
 // const generateSitemap = require('./scripts/sitemap')
@@ -29,6 +29,9 @@ module.exports = {
   env: {
     NOT_FOUND:
       'https://garnetgaming.net/forums/uploads/monthly_2018_11/lain-transparent-static-4.gif.abf402297aef7303cde0c2da0ebc81be.gif',
+    NOT_INVITES:
+      // 'https://lh3.googleusercontent.com/proxy/C5ExsFVwl-ukI8RMJQbAhCTZJzPyh-u_wQsD3HqBnFWBRLc-PpHClB4Q5CODNxZ4iR-m8qB6q8jaEsoekJCAJU9T6ciG6UFcjaZyAhWRQ0oqKRZv8GxT3rAEhMMRmFKrFvVM',
+      'https://firebasestorage.googleapis.com/v0/b/csleague-2ecff.appspot.com/o/etc%2Fnot_invites.gif?alt=media&token=1b1d83e1-f6f4-4a48-85cb-5520663ced0a',
     BACKEND_URL: process.env.NEXT_APP_BACKEND_URL,
     DASHBOARD_NULL: dashboardNull,
     AVATAR_NULL: avatarNull,

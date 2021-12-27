@@ -25,8 +25,6 @@ export const useApp = () => {
   const appLoad = useCallback(async () => {
     const { data, errors } = await clientHandle(ACTIVE_ROOM, {})
 
-    console.log('data', data)
-
     if (data && !errors) activedRoom(data.activeRoom)
 
     appLoaded()

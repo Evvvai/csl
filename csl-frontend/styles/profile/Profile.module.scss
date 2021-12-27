@@ -24,7 +24,7 @@
         transparent,
         transparent,
         rgba(20, 20, 20, 0.1) 0,
-        #333
+        var(--color-background-modal)
       );
       position: absolute;
       top: 0;
@@ -47,7 +47,7 @@
       height: 50px;
       width: 50px;
       border-radius: 50%;
-      background-color: rgba(41, 41, 41, 0.5);
+      background-color: var(--color-background-modal);
 
       transition: all 0.2s ease-in;
 
@@ -123,7 +123,7 @@
       height: 50px;
       width: 50px;
       border-radius: 50%;
-      background-color: rgba(41, 41, 41, 0.5);
+      background-color: var(--color-background-modal);
 
       transition: all 0.2s ease-in;
 
@@ -152,7 +152,7 @@
   width: 100%;
   transform: rotate(180deg);
   height: 30px;
-  fill: #333;
+  fill: var(--color-background-modal);
 }
 
 .profileInner {

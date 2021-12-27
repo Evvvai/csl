@@ -7,6 +7,7 @@ const { layoutsMain, layoutsMainTip } = styles
 // Component
 import Room from 'components/room/Room.component'
 import FriendAside from 'components/friend-aside/FriendAside.component'
+import NotificationAside from 'components/notification-aside/NotificationAside.component'
 
 // Utils
 
@@ -19,6 +20,7 @@ const MainLayout: FC = ({ children }) => {
         <Room />
       </div>
       <FriendAside />
+      <NotificationAside />
     </main>
   )
 }

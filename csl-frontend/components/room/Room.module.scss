@@ -70,7 +70,11 @@
     cursor: pointer;
 
     &.Empty {
-      border: 2px dashed black;
+      border: 2px dashed var(--color-sub-text);
+
+      svg {
+        fill: var(--color-sub-text);
+      }
     }
 
     img {
@@ -126,6 +130,7 @@
     height: 18px;
     border-radius: 50%;
     cursor: pointer;
+    fill: var(--color-text);
   }
 }
 
@@ -186,7 +191,7 @@
     margin: 0 5px;
     height: 90%;
     width: 1px;
-    background-color: rgba(0, 0, 0, 0.657);
+    background-color: var(--color-sub-text);
   }
 
   &H {

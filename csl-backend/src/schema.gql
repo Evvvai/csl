@@ -26,7 +26,8 @@ type Room {
   captainId: Float!
   maxPlayers: Float!
   isPublic: Boolean!
-  isSearch: Boolean!
+  isShare: Boolean!
+  status: String!
   createdAt: DateTime!
   udaptedAt: DateTime!
   users: [User!]!
@@ -42,6 +43,7 @@ type Query {
   findOne(steamid64: String!): User!
   friends(userId: Float!): [User!]!
   activeRoom: Room!
+  room(id: Float!): Room!
 }
 
 type Mutation {

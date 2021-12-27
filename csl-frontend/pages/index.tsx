@@ -34,11 +34,7 @@ const Home = (props: Props) => {
               <span>Leaderboard</span>
             </a>
           </Link>
-          <Link href={'/auth'}>
-            <a>
-              <span>Auth</span>
-            </a>
-          </Link>
+          <span>blank</span>
         </section>
       </div>
     </Fragment>

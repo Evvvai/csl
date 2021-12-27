@@ -10,9 +10,10 @@ export interface Room {
   id: number
   name: string
   captainId: number
-  maxPlayers: number
+  maxPlayers: 2 | 3 | 5
   isPrivate: boolean
-  isSearch: boolean
+  isShare: boolean
+  status: StatusRoom
   createdAt: Date
   udaptedAt: Date
   users: User[]
@@ -23,6 +24,15 @@ export interface Room {
 //   THREE = 3,
 //   FIVE = 5,
 // }
+
+// export enum StatusRoom {
+//   PENDING = 'pending',
+//   SEARCHING = 'searching',
+//   CONFIRMATION = 'confirmation',
+// }
+
+export const statusRoom = ['pending', 'searching', 'confirmation'] as const
+export type StatusRoom = typeof statusRoom[number]
 
 export const maxPlayers = ['TWO', 'THREE', 'FIVE'] as const
 export type MaxPlayers = typeof maxPlayers[number]

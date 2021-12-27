@@ -10,18 +10,10 @@
   width: var(--friend-aside-width);
 
   background-image: linear-gradient(-135deg, var(--tw-gradient-stops));
-  --tw-gradient-from: #202020;
+  --tw-gradient-from: var(--color-background-modal-content);
   --tw-gradient-stops: var(--tw-gradient-from),
     var(--tw-gradient-to, rgba(255, 255, 255, 0));
   --tw-gradient-to: var(--color-background-modal);
-
-  &Content {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-  }
-
   transform: translateX(var(--friend-aside-width));
 
   &.Open {
@@ -31,13 +23,20 @@
   transition: all 0.2s ease-out;
 }
 
+.content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
 .title {
   text-align: center;
 
   h1 {
     margin: 5px 0;
     font-size: 1rem;
-    color: var(--color-sub-text-invert);
+    color: var(--color-text-invert);
     text-transform: uppercase;
     letter-spacing: 10px;
   }
@@ -56,6 +55,7 @@
   position: relative;
 
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 5px;
 
@@ -77,12 +77,21 @@
 
   &Icon {
     fill: var(--color-sub-text-invert);
+
     min-height: 20px;
     min-width: 20px;
+
     cursor: pointer;
+
+    svg {
+      pointer-events: none;
+      fill: var(--color-sub-text-invert);
+      width: 100%;
+      height: 100%;
+    }
   }
 
-  :first-child {
+  > :first-child {
     position: absolute;
     top: 7px;
     left: 15px;
@@ -90,31 +99,32 @@
   }
 }
 
-.cFriends {
-  > * {
-    display: flex;
-    flex-direction: column;
+.list {
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid transparent;
 
-    :hover {
-      background-color: var(--color-background-modal-content);
+  > :hover {
+    background-color: var(--color-background-modal-content);
+    border-right: 2px solid var(--color-highlight);
 
-      .cFriendsInvite {
-        opacity: 1;
-      }
+    .itemInvite {
+      opacity: 1;
     }
-    transition: all 0.1s ease-in-out;
   }
+  transition: all 0.1s ease-in-out;
+  height: calc(100% - 20px - var(--footer-height) - var(--header-height));
+}
 
-  &Item {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    padding: 5px 10px;
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 5px 10px;
 
-    color: var(--color-sub-text-invert);
-    width: 100%;
-  }
+  color: var(--color-sub-text-invert);
+  width: 100%;
 
   &Img {
     position: relative;
@@ -123,13 +133,12 @@
       border-radius: 90%;
       height: 40px;
       width: 40px;
-      border-radius: 90%;
       cursor: pointer;
       object-fit: cover;
     }
   }
 
-  &Status {
+  &Online {
     position: absolute;
     bottom: 1px;
     right: 1px;
@@ -183,4 +192,11 @@
   cursor: pointer;
 
   fill: var(--color-sub-text-invert);
+}
+
+.tip {
+  color: var(--color-sub-text-invert);
+  font-size: 0.7rem;
+  z-index: 9999;
+  width: 400px;
 }

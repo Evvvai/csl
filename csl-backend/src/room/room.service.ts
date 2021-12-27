@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateRoomInput } from './dto/create-room.input';
 import { Room } from './entities/room.entity';
 import { RoomI } from './entities/room.interface';
+import { StatusRoom } from './entities/status-room';
 
 @Injectable()
 export class RoomService {
@@ -47,5 +48,23 @@ export class RoomService {
 
     if (!room) return new Room();
     return await this.roomRepository.findOne({ where: { id: room.roomId } });
+  }
+
+  async getRoomById(id: number): Promise<RoomI> {
+    return await this.roomRepository.findOne({ where: { id } });
+  }
+
+  async updateStatus(id: number, status: StatusRoom) {
+    // return await this.roomRepository.save({
+    //   id,
+    //   status,
+    // });
+
+    return this.roomRepository
+      .createQueryBuilder()
+      .update(Room)
+      .set({ status: status })
+      .where('id = :id', { id: id })
+      .execute();
   }
 }

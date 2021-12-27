@@ -33,4 +33,8 @@ export class RoomsUsersService {
 
     return users;
   }
+
+  async removeUser(user: UserI) {
+    return this.roomsUsersRepository.delete({ userId: user.id });
+  }
 }

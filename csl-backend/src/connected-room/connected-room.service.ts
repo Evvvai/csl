@@ -22,6 +22,12 @@ export class ConnectedRoomService {
     return this.connectedRoomRepository.save(connectedRoom);
   }
 
+  async getAllConnectionByRoom(room: RoomI) {
+    return this.connectedRoomRepository.find({
+      where: { roomId: room.id },
+    });
+  }
+
   async deleteAllConnection() {
     await this.connectedRoomRepository.createQueryBuilder().delete().execute();
   }
@@ -32,5 +38,11 @@ export class ConnectedRoomService {
 
   async deleteBySocketId(socketId: string) {
     return this.connectedRoomRepository.delete({ socketId });
+  }
+
+  async deleteBySocketIds(socketIds: string[]) {
+    return this.connectedRoomRepository.delete({
+      socketId: In(socketIds),
+    });
   }
 }

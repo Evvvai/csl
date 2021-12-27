@@ -26,16 +26,13 @@ export const useRoom = () => {
   }, [])
 
   const leaveRoom = useCallback(async (room: Room) => {
-    // setLoading()
-    // const { data, errors } = await clientHandle(CREATE_ROOM, {
-    //   maxPlayers: maxPlayers,
-    // })
-    // createdRoom(data.createRoom)
+    leavedRoom(room)
   }, [])
 
   const deleteRoom = useCallback(async (room: Room) => {
     setLoading()
 
+    // Not Needed cuz sockets
     // const { data, errors } = await clientHandle(DELETE_ROOM, {})
 
     deletedRoom(room)

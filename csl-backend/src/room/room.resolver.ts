@@ -45,6 +45,11 @@ export class RoomResolver {
     return this.roomService.getRoomsForUser(user);
   }
 
+  @Query(() => Room)
+  room(@Args('id') id: number) {
+    return this.roomService.getRoomById(id);
+  }
+
   // Resolve
   @ResolveField((returns) => [User], { name: 'users' })
   users(@Parent() room: Room) {

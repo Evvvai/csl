@@ -5,6 +5,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ConnectedUserModule } from '../connected-user/connected-user.module';
 import { ConnectedRoomModule } from '../connected-room/connected-room.module';
 import { RoomModule } from 'src/room/room.module';
+import { RoomsUsersModule } from 'src/rooms-users/rooms-users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RoomModule } from 'src/room/room.module';
     ConnectedUserModule,
     ConnectedRoomModule,
     RoomModule,
+    RoomsUsersModule,
   ],
   providers: [SocketGateway],
 })

@@ -1,6 +1,4 @@
 # compiled output
-/next
-.next
 /dist
 /node_modules
 /ssl/*

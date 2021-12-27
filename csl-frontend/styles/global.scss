@@ -4,19 +4,18 @@
   // Global
   --color-text: #{$color-text};
   --color-sub-text: #{$color-sub-text};
-  --color-text-invert: white;
-  --color-sub-text-invert: rgb(218, 218, 218);
+  --color-text-invert: rgb(204, 204, 204);
+  --color-sub-text-invert: rgb(170, 170, 170);
 
   // Header
   --color-header: #{$color-header};
   --color-header-bg: #{$color-header-bg};
+  --color-header-highlight-bg: #{$color-header-highlight-bg};
   --color-header-icon: #{$color-header-icon};
 
   // Footer
   --color-footer: #{$color-footer};
   --color-footer-hover: #{$color-footer-hover};
-
-  --color-highlight: #{$color-highlight};
 
   // Background
   --color-background: #{$color-background};
@@ -62,18 +61,33 @@
   --color-submit-bg-lock: #a1a1a1;
   --color-submit-bg: #7289da;
   --color-submit-bg-hover: #5468b1;
+
+  --color-highlight: #{$color-highlight};
 }
 
 html[data-theme='dark'] {
+  // Global
   --color-text: #{$color-text-dark};
   --color-sub-text: #{$color-sub-text-dark};
+  --color-text-invert: #{$color-text-invert-dark}; //!
+  --color-sub-text-invert: #{$color-sub-text-invert-dark}; //!
 
+  // Header
   --color-header: #{$color-header-dark};
   --color-header-bg: #{$color-header-bg-dark};
+  --color-header-highlight-bg: #{$color-header-highlight-bg-dark};
   --color-header-icon: #{$color-header-icon-dark};
 
+  // Footer
+  --color-footer: #{$color-footer-dark}; //!
+  --color-footer-hover: #{$color-footer-hover-dark}; //!
+
+  // Background
   --color-background: #{$color-background-dark};
   --color-background-content: #{$color-background-content-dark};
+  --color-background-highlight: #{$color-background-highlight-dark}; //!
+  --color-background-modal: #{$color-background-modal-dark}; //!
+  --color-background-modal-content: #{$color-background-modal-content-dark}; //!
 
   --color-input-bg: #{$color-background-content-dark};
   --color-border: #{$color-border-dark};
@@ -87,15 +101,28 @@ html[data-theme='dark'] {
 }
 
 html[data-theme='blue'] {
+  // Global
   --color-text: #{$color-text-blue};
   --color-sub-text: #{$color-sub-text-blue};
+  --color-text-invert: #{$color-text-invert-blue}; //!
+  --color-sub-text-invert: #{$color-sub-text-invert-blue}; //!
 
+  // Header
   --color-header: #{$color-header-blue};
   --color-header-bg: #{$color-header-bg-blue};
+  --color-header-highlight-bg: #{$color-header-highlight-bg-blue};
   --color-header-icon: #{$color-header-icon-blue};
 
+  // Footer
+  --color-footer: #{$color-footer-blue}; //!
+  --color-footer-hover: #{$color-footer-hover-blue}; //!
+
+  // Background
   --color-background: #{$color-background-blue};
   --color-background-content: #{$color-background-content-blue};
+  --color-background-highlight: #{$color-background-highlight-blue}; //!
+  --color-background-modal: #{$color-background-modal-blue}; //!
+  --color-background-modal-content: #{$color-background-modal-content-blue}; //!
 
   --color-input-bg: #{$color-background-content-blue};
   --color-border: #{$color-border-blue};

@@ -107,7 +107,15 @@ export default function Room(props: Props): JSX.Element {
           {currentRoom.users.map((user) => {
             return (
               <div key={user.id} className={playersItem}>
-                <img src={user.avatarCustom} />
+                <img
+                  src={
+                    user.avatarCustom !== null
+                      ? user.avatarCustom
+                      : user.avatarfull
+                      ? user.avatarfull
+                      : process.env.AVATAR_NULL
+                  }
+                />
                 {user.id === currentRoom.captainId ? (
                   <CrownIcon className={playersLeader} />
                 ) : (

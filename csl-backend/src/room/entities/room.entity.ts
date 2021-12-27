@@ -1,19 +1,16 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { ConnectedRoom } from 'src/connected-room/entities/connected-room.entity';
 import { RoomsUsers } from 'src/rooms-users/entities/rooms-users.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Index,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MaxPlayers } from './max-players.enum';
+import { StatusRoom } from './status-room';
 
 @ObjectType()
 @Index('FK_room_user', ['captainId'], {})
@@ -49,7 +46,11 @@ export class Room {
     default: () => 'FALSE',
   })
   @Field({ nullable: false })
-  isSearch: boolean;
+  isShare: boolean;
+
+  @Column({ type: 'enum', enum: StatusRoom, default: StatusRoom.PENDING })
+  @Field({ nullable: false })
+  status: StatusRoom;
 
   @CreateDateColumn({
     name: 'createdAt',

@@ -1,3 +1,4 @@
+import { LobbyInvites, Room, User } from '@store'
 import { Dispatch } from 'redux'
 import { RootState } from 'stores/rootReducer'
 
@@ -21,7 +22,8 @@ const socketMiddleware = (socket: any) => {
       userSocketOn(socket, dispatch)
       roomSocketOn(socket, dispatch)
       friendSocketOn(socket, dispatch)
-      syncSocketOn(socket)
+      notificationSocketOn(socket, dispatch)
+      syncSocketOn(socket, dispatch)
 
       return next(action)
     }
@@ -47,6 +49,12 @@ const socketMiddleware = (socket: any) => {
         friendSocket(actions[1], socket, payload, dispatch)
         break
       }
+
+      // Notifictaion
+      case 'notification': {
+        notificationSocket(actions[1], socket, payload, dispatch)
+        break
+      }
     }
 
     return next(action)
@@ -67,10 +75,10 @@ const userSocket = (type: string, socket: any, payload: any, dispatch: any) => {
 
 const userSocketOn = (socket: any, dispatch: any) => {
   // Update the online users list every time a user logs in or out
-  socket.on('users online', (onlineUsers: any) => {
-    console.log('users online', onlineUsers)
-    // dispatch()
-  })
+  // socket.on('users online', (onlineUsers: any) => {
+  //   console.log('users online', onlineUsers)
+  //   // dispatch()
+  // })
 
   socket.on('connected', (data: any) => {
     console.log('Connected')
@@ -87,6 +95,7 @@ const roomSocket = (type: string, socket: any, payload: any, dispatch: any) => {
     }
 
     case 'leavedRoom': {
+      console.log('leavedRoom', payload)
       socket.emit('leaveRoom', payload)
       break
     }
@@ -97,24 +106,49 @@ const roomSocket = (type: string, socket: any, payload: any, dispatch: any) => {
     }
 
     case 'activedRoom': {
-      socket.emit('activedRoom', payload)
+      socket.emit('reConnectRoom', payload)
+      break
+    }
+
+    case 'sendedInvite': {
+      socket.emit('sendedInvite', payload)
       break
     }
   }
 }
 
 const roomSocketOn = (socket: any, dispatch: any) => {
-  socket.on('roomDeleted', (room: any) => {
+  socket.on('room/deleted', (room: Room) => {
+    console.log('socket.on | room/deleted')
     dispatch({
       type: 'room/deletedRoom',
       payload: room,
     })
   })
-
-  socket.on('syncRoomCreated', (room: any) => {
+  socket.on('room/joinRoom', (room: Room) => {
     dispatch({
       type: 'room/syncRoom',
       payload: room,
+    })
+  })
+  socket.on('room/userJoin', (user: User) => {
+    console.log('socket.on | room/userJoin', user)
+
+    // DANGEROUS
+    dispatch({
+      type: 'friend/removedInvite',
+      payload: { user: user } as LobbyInvites,
+    })
+    dispatch({
+      type: 'room/addUser',
+      payload: user,
+    })
+  })
+  socket.on('room/userLeave', (user: User) => {
+    console.log('socket.on | room/userLeave', user)
+    dispatch({
+      type: 'room/removeUser',
+      payload: user,
     })
   })
 }
@@ -128,22 +162,26 @@ const friendSocket = (
 ) => {
   switch (type) {
     // User
-    case '...': {
-      socket.emit('...', payload)
+    case 'sendedInvite': {
+      socket.emit('sentInvite', payload)
+      break
+    }
+    case 'removedInvite': {
+      socket.emit('removeInvite', payload)
       break
     }
   }
 }
 
 const friendSocketOn = (socket: any, dispatch: any) => {
-  socket.on('loadFriends', (friends: any) => {
+  socket.on('friend/load', (friends: any) => {
     dispatch({
       type: 'friend/loadFriends',
       payload: friends,
     })
   })
 
-  socket.on('friendOnline', (friendId: number) => {
+  socket.on('friend/online', (friendId: number) => {
     dispatch({
       type: 'friend/friendOnline',
       payload: friendId,
@@ -151,20 +189,92 @@ const friendSocketOn = (socket: any, dispatch: any) => {
     console.log('friendOnline')
   })
 
-  socket.on('friendOffline', (friendId: number) => {
+  socket.on('friend/offline', (friendId: number) => {
     dispatch({
       type: 'friend/friendOffline',
       payload: friendId,
     })
     console.log('friendOffline')
   })
+
+  socket.on('friend/declineInvite', (invite: LobbyInvites) => {
+    console.log('socket.on | friend/declineInvite', invite)
+    dispatch({
+      type: 'friend/removedInvite',
+      payload: invite,
+    })
+  })
+}
+
+// Notification
+const notificationSocket = (
+  type: string,
+  socket: any,
+  payload: any,
+  dispatch: any
+) => {
+  switch (type) {
+    case 'acceptedInvite': {
+      socket.emit('joinRoom', payload.room)
+      break
+    }
+    case 'declinedInvite': {
+      socket.emit('declineInvite', payload)
+      break
+    }
+  }
+}
+
+const notificationSocketOn = (socket: any, dispatch: any) => {
+  socket.on('notification/invite', (invite: LobbyInvites) => {
+    dispatch({
+      type: 'notification/newInvite',
+      payload: invite,
+    })
+  })
+  socket.on('notification/removeUserInvite', (invite: LobbyInvites) => {
+    console.log('socket.on | notification/removeUserInvite', invite)
+
+    dispatch({
+      type: 'notification/removeUserInvite',
+      payload: invite,
+    })
+  })
+  // socket.on('removeRoomInvite', (invite: LobbyInvites) => {
+  //   dispatch({
+  //     type: 'notification/removeRoomInvite',
+  //     payload: invite,
+  //   })
+  // })
 }
 
 // Cringe but I think this is the surest way to synchronize the sessions
-const syncSocketOn = (socket: any) => {
+const syncSocketOn = (socket: any, dispatch: any) => {
   socket.on('sync', (socketIds: any) => {
     socket.emit('sync', socketIds)
   })
+
+  socket.on('sync/roomCreated', (room: Room) => {
+    dispatch({
+      type: 'room/syncRoom',
+      payload: room,
+    })
+  })
+
+  socket.on('sync/joinRoom', (room: Room) => {
+    dispatch({
+      type: 'room/syncRoom',
+      payload: room,
+    })
+  })
+
+  socket.on('sync/leaveRoom', () => {
+    dispatch({
+      type: 'room/syncRoom',
+      payload: [],
+    })
+  })
+
   socket.on('error', (Exception: any) => {
     console.log('Connected')
   })
