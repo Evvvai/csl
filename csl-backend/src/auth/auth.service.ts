@@ -13,9 +13,9 @@ import { FriendsUserService } from 'src/friends-user/friends-user.service';
 export class AuthService {
   constructor(
     private readonly jwt: JwtService,
-    private usersService: UsersService,
-    private steamAPIAuthService: SteamAPIAuthService,
-    private friendsUserService: FriendsUserService,
+    private readonly usersService: UsersService,
+    private readonly steamAPIAuthService: SteamAPIAuthService,
+    private readonly friendsUserService: FriendsUserService,
   ) {}
 
   public async auth(user: User): Promise<UserToken> {

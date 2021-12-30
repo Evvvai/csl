@@ -20,6 +20,12 @@ const {
   moveFriend,
   mode,
   modeActive,
+  start,
+  startContent,
+  info,
+  infoItem,
+  search,
+  searchContent,
 } = styles
 
 // Components
@@ -29,7 +35,9 @@ import LeaveIcon from '../../assets/icon/Close.svg'
 import CrownIcon from '../../assets/icon/Crown.svg'
 import CCrownIcon from '../../assets/icon/CCrown.svg'
 import { GiFireflake } from 'react-icons/gi'
-import Setting from './Setting/Setting.component'
+import { GiCrossedSwords } from 'react-icons/gi'
+import { RiZzzFill } from 'react-icons/ri'
+import Setting from './setting/Setting.component'
 
 // Custom hooks
 import { useFriend } from 'hooks/store/friend'
@@ -39,11 +47,8 @@ import { useRoom } from 'hooks/store/room'
 import cn from 'classnames'
 import { Portal } from 'utils/portal'
 import Modal from '../UI/Modal/Modal.component'
-import DashboardEditModal from 'components/profile/DasboardEdit/DashboardEdit.component'
-import { clientHandle } from 'utils/graphql'
-import { CREATE_ROOM, DELETE_ROOM } from 'types/graphql/mutation'
-import { maxPlayers, MaxPlayers } from '@store'
-import DeleteRoom from './DeleteRoom/DeleteRoom.component'
+import { MaxPlayers } from '@store'
+import DeleteRoom from './delete-room/DeleteRoom.component'
 import { useRouter } from 'next/dist/client/router'
 
 interface Props {}
@@ -66,9 +71,12 @@ export default function Room(props: Props): JSX.Element {
   const [isSelectMode, setIsSelectMode] = useState<boolean>(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 
+  // hardcode must remove into redux
+  const [isSearch, setIsSearch] = useState<boolean>(false)
+
   const handleClickCreate = (maxPlayers: MaxPlayers) => async () => {
     if (!isLoggedIn) {
-      router.push(process.env.BACKEND_URL + '/auth/steam')
+      router.push(process.env.NEXT_BACKEND_URL + '/auth/steam')
       return
     }
     if (!isLoading) createRoom(maxPlayers)
@@ -81,6 +89,7 @@ export default function Room(props: Props): JSX.Element {
   const handleClickInvite = () => openFriend()
   const handleClickSetting = () => setIsSettings(!isSettings)
   const handleClickSelectMode = () => setIsSelectMode(!isSelectMode)
+  const handleClickSearch = (search: boolean) => () => setIsSearch(search)
 
   // Need create separete component
   if (!currentRoom?.id) {
@@ -154,6 +163,31 @@ export default function Room(props: Props): JSX.Element {
         </div>
         <Setting setOpen={setIsSettings} isOpen={isSettings} />{' '}
         {/* Need rework */}
+        <div className={start}>
+          {isSearch ? (
+            <div className={startContent} onClick={handleClickSearch(false)}>
+              <RiZzzFill />
+            </div>
+          ) : (
+            <div className={startContent} onClick={handleClickSearch(true)}>
+              <GiCrossedSwords />
+            </div>
+          )}
+        </div>
+        {isSearch && (
+          <div className={search}>
+            <div className={searchContent}>
+              <span>Match searching...</span>
+            </div>
+          </div>
+        )}
+        {/* Mb later */}
+        {/* <div className={info}>
+          <span className={infoItem}>aaaaa</span>
+          <span className={infoItem}>aaaaa</span>
+          <span className={infoItem}>aaaaa</span>
+          <span className={infoItem}>aaaaa</span>
+        </div> */}
       </div>
     </div>
   )

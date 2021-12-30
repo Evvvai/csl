@@ -1,7 +1,4 @@
-import { JWT_SECRET } from '@environments';
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
@@ -15,17 +12,7 @@ import { AuthController } from './auth.controller';
 import { FriendsUserModule } from 'src/friends-user/friends-user.module';
 
 @Module({
-  imports: [
-    HttpModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: JWT_SECRET,
-      }),
-    }),
-    UsersModule,
-    FriendsUserModule,
-  ],
+  imports: [PassportModule, UsersModule, FriendsUserModule],
   controllers: [AuthController],
   providers: [
     AuthResolver,

@@ -31,9 +31,15 @@
     justify-content: space-between;
 
     &First {
+      @include mobile {
+        display: none;
+      }
     }
 
     &Second {
+      @include mobile {
+        width: 100%;
+      }
     }
   }
 
@@ -136,7 +142,7 @@
     }
 
     &.Active {
-      background-color: #333;
+      background-color: var(--color-background-modal-content);
       transition: all 0.1s ease-in;
 
       .menuProfileChevron {

@@ -1,0 +1,216 @@
+.cFriends {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  // background-image: url(../../public/Triangles.svg);
+  background-size: 100% 100%;
+  background-size: cover;
+
+  &Content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  h1 {
+    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+  }
+
+  hr {
+    width: 50%;
+    height: 1px;
+    background-color: var(--color-border);
+    opacity: 0.5;
+    margin: 5px;
+  }
+}
+
+.item {
+  position: relative;
+
+  width: 25%;
+  // margin: 5px 10px;
+
+  cursor: pointer;
+  padding: 5px 20px;
+
+  display: flex;
+  flex-direction: row;
+
+  &Friend {
+    box-shadow: 0 0px 5px rgb(0 0 0 / 20%);
+    background-color: var(--color-background-content);
+    width: 100%;
+
+    border-radius: 5px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    padding-right: 5px;
+
+    &:hover {
+      background-color: var(--color-background-highlight);
+
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+
+  &:hover {
+    .options {
+      opacity: 1;
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+  }
+}
+
+.lobby {
+  &Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &Hr {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 5px 0;
+  }
+
+  &Inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px;
+  }
+
+  &Player {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: red;
+    margin: 2px;
+  }
+}
+
+.various {
+  position: relative;
+  width: 50%;
+  border-top: 1px solid var(--color-border);
+  margin: 0 auto;
+
+  span {
+    position: absolute;
+    top: -1px;
+    height: 3px;
+    width: 100px;
+    background-color: var(--color-highlight);
+    color: var(--color-text);
+
+    transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 0 10px;
+    height: 35px;
+    width: 100px;
+    cursor: pointer;
+    color: var(--color-text);
+
+    .Active {
+    }
+  }
+  transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.search {
+  width: 100%;
+  margin: 10px 2px;
+}
+
+.list {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.info {
+  max-width: 115px;
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+
+  &Name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+  &Online {
+    font-size: 0.8rem;
+  }
+}
+
+.options {
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px 0;
+
+  height: 100%;
+
+  svg {
+    min-width: 18px;
+    min-height: 18px;
+
+    fill: var(--color-text);
+  }
+  transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}

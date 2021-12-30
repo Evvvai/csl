@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request'
 import getBearerToken from 'utils/getBearerToken'
 
 const client = new GraphQLClient(
-  (process.env.NEXT_BACKEND_URL || 'http://localhost:8080') + '/graphql',
+  (process.env.NEXT_BACKEND_URL || 'https://apishka.xyz:8080') + '/graphql',
   {
     // headers: { authorization: getJwtToken() },
     headers: { authorization: getBearerToken() },

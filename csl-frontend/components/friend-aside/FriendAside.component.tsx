@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 // Styles
 import styles from './FriendAside.module.scss'
@@ -23,23 +23,29 @@ const {
   tip,
 } = styles
 
-// Components
+// Icons
 import { MdPersonAdd } from 'react-icons/md'
 import { AiOutlineCloudSync } from 'react-icons/ai'
 import { MdOutlineManageSearch } from 'react-icons/md'
 import { IoIosClose } from 'react-icons/io'
 import { MdLibraryAdd } from 'react-icons/md'
 import { RiMailCloseFill } from 'react-icons/ri'
+
+// Components
 import ToolTip from '../UI/Tooltip/Tooltip.component'
+import FriendSync from './friend-sync/FriendSync.component'
 
 // Custom hooks
 import { useFriend } from 'hooks/store/friend'
+import Modal from 'components/UI/Modal/Modal.component'
+import { Portal } from 'utils/portal'
 
 // Utils
 import cn from 'classnames'
 import { useRouter } from 'next/dist/client/router'
 import { useRoom } from 'hooks/store/room'
 import { User } from '@store'
+import dayjs from 'dayjs'
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 export default function FriendAside(): JSX.Element {
@@ -54,15 +60,19 @@ export default function FriendAside(): JSX.Element {
     invitedFriends,
     removeInvite,
   } = useFriend()
-
   const { currentRoom } = useRoom()
+
+  const [isFriendSync, setIsFriendSync] = useState<boolean>(false)
 
   const router = useRouter()
   const handleClickClose = () => closeFriend()
-  const handleClickNewFriend = () => updateFriends()
+  const handleClickNewFriend = () => {
+    setIsFriendSync(true)
+    handleClickClose()
+  }
   const handleClickOpenProfile = (steamid64: string) => () => {
     router.push('/' + steamid64)
-    closeFriend()
+    handleClickClose()
   }
   const handleClickInvite = (user: User) => () => sentInvite(user, currentRoom)
   const handleClickRejectInvite = (user: User) => () => {
@@ -79,7 +89,13 @@ export default function FriendAside(): JSX.Element {
         <div className={search}>
           <MdOutlineManageSearch className={cn(searchIcon)} />
           <input className={searchInput} />
-          <div className={searchIcon}>
+          <div
+            className={searchIcon}
+            onClick={(e) => {
+              router.push('/friends')
+              handleClickClose()
+            }}
+          >
             <MdPersonAdd />
           </div>
 
@@ -99,6 +115,15 @@ export default function FriendAside(): JSX.Element {
           >
             <div className={searchIcon} onClick={handleClickNewFriend}>
               <AiOutlineCloudSync />
+              <Portal selector="#modal">
+                <Modal isOpen={isFriendSync} setOpen={setIsFriendSync}>
+                  <FriendSync
+                    isOpen={isFriendSync}
+                    setOpen={setIsFriendSync}
+                    updateFriends={updateFriends}
+                  />
+                </Modal>
+              </Portal>
             </div>
           </ToolTip>
         </div>
@@ -133,8 +158,12 @@ export default function FriendAside(): JSX.Element {
                       />
                     </div>
                     <div className={itemInfo}>
-                      <span>{val.username}</span>
-                      <span>{val.status.action}</span>
+                      <div>{val.username}</div>
+                      {val.online ? (
+                        <span>{val.status.action}</span>
+                      ) : (
+                        <span>{dayjs(val.lastLogin).fromNow()}</span>
+                      )}
                     </div>
                     {/* Need implement cooldown */}
                     {currentRoom?.id &&

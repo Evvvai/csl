@@ -22,6 +22,9 @@ import { useUser } from 'hooks/store/user'
 import { GraphQLClient } from 'graphql-request'
 import getBearerToken from 'utils/getBearerToken'
 import { AUTH } from 'types/graphql/mutation'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import duration from 'dayjs/plugin/duration'
 
 /////////////////////////////////////////////////////////////////////////////////////
 function MyApp({ Component, pageProps }: AppProps) {
@@ -31,6 +34,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     // appLoad()
     authUser(getBearerToken()) // For tests it's better suited...but it's without cfr, so it will need to be removed
+    dayjs.extend(relativeTime)
+    dayjs.extend(duration)
+    dayjs.locale('ru')
   }, [])
 
   if (!isLoad) return <div>Ladno</div>
@@ -68,7 +74,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 //         const cookies = ctx ? Cookies.get(ctx) : parseCookies()
 //         const token = cookies.token
 
-//         const client = new GraphQLClient(process.env.BACKEND_URL + '/graphql', {
+//         const client = new GraphQLClient(process.env.NEXT_BACKEND_URL + '/graphql', {
 //           headers: { authorization: 'Bearer ' + token },
 //         })
 

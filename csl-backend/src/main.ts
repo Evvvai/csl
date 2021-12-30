@@ -1,27 +1,17 @@
-import { LoggingInterceptor, MyLogger } from '@config';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { MyLogger } from '@config';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { xssProtection, xframe } from 'lusca';
-import { useContainer } from 'class-validator';
+import { xssProtection } from 'lusca';
 import * as chalk from 'chalk';
 import * as compression from 'compression';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import * as rateLimit from 'express-rate-limit';
-import {
-  DOMAIN,
-  END_POINT,
-  NODE_ENV,
-  PORT,
-  PRIMARY_COLOR,
-  RATE_LIMIT_MAX,
-  CLIENT_HOST,
-} from '@environments';
-
-declare const module: any;
+import * as morgan from 'morgan';
+import { NODE_ENV, PORT, PRIMARY_COLOR, RATE_LIMIT_MAX } from '@environments';
 
 async function bootstrap() {
   try {
@@ -43,8 +33,6 @@ async function bootstrap() {
       });
     }
 
-    useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
     // Logger
     app.useLogger(new MyLogger());
 
@@ -54,14 +42,20 @@ async function bootstrap() {
     // compression
     app.use(compression());
 
+    // yep
+    app.use(morgan('combined'));
+
     // added security
     app.use(helmet());
+
+    // cors
     app.enableCors({
-      origin: CLIENT_HOST,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
-    app.use(xframe('SAMEORIGIN'));
+
+    // app.use(xframe('SAMEORIGIN'));
     app.use(xssProtection(true));
 
     // body parser
@@ -85,44 +79,21 @@ async function bootstrap() {
     );
 
     //  global nest setup
-    app.useGlobalPipes(new ValidationPipe());
+    // app.useGlobalPipes(new ValidationPipe());
     //app.useGlobalInterceptors(new LoggingInterceptor());
 
     app.enableShutdownHooks();
+    app.startAllMicroservices();
 
     await app.listen(PORT);
-    if (module.hot) {
-      module.hot.accept();
-      module.hot.dispose(() => app.close());
-    }
 
-    NODE_ENV !== 'production'
-      ? (Logger.log(
-          `🤬  Application is running on: ${await app.getUrl()}`,
-          'NestJS',
-          false,
-        ),
-        Logger.log(
-          `🚀  Server ready at http://${DOMAIN}:${chalk
-            .hex(PRIMARY_COLOR)
-            .bold(PORT.toString())}/${END_POINT}`,
-          'Bootstrap',
-          false,
-        ),
-        Logger.log(
-          `🚀  Subscriptions ready at ws://${DOMAIN}:${chalk
-            .hex(PRIMARY_COLOR)
-            .bold(PORT.toString())}/${END_POINT}`,
-          'Bootstrap',
-          false,
-        ))
-      : Logger.log(
-          `🚀  Server is listening on port ${chalk
-            .hex(PRIMARY_COLOR)
-            .bold(PORT.toString())}`,
-          'Bootstrap',
-          false,
-        );
+    Logger.log(
+      `🚀  Server is listening on port ${chalk
+        .hex(PRIMARY_COLOR)
+        .bold(PORT.toString())}`,
+      'Bootstrap',
+      false,
+    );
   } catch (error) {
     Logger.error(`❌  Error starting server, ${error}`, '', 'Bootstrap', false);
     process.exit();

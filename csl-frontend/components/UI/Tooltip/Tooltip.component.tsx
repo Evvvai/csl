@@ -114,7 +114,7 @@ const getPoint = (el: any, tt: any, placement: any, space: any) => {
         (pos.isHorizontal() && (pt.x < bdys.l || pt.x > bdys.r)) ||
         (pos.isVertical() && (pt.y < bdys.t || pt.y > bdys.b))
       ) {
-        console.log('recurCount', recurCount)
+        // console.log('recurCount', recurCount)
         pt.reset(recursive(pos.negate()))
       }
     }

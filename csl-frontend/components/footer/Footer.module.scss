@@ -38,4 +38,16 @@
       color: var(--color-text);
     }
   }
+
+  @include mobile {
+    .footer {
+      &Content {
+        font-size: 0.6rem;
+
+        span {
+          margin: 0 2px;
+        }
+      }
+    }
+  }
 }

@@ -55,19 +55,20 @@ export default function Header(): JSX.Element {
     closeNotification,
     lobbyInvites,
   } = useNotification()
-
   const { isLoggedIn, userInfo } = useUser()
+
+  const handleClickMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+    closeNotification()
+    closeFriend()
+  }
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const menuButtonRef = createRef()
 
   const MenuChevron = React.forwardRef((props, ref: any) => (
-    <div
-      ref={ref}
-      className={menuProfileChevron}
-      onClick={(e) => setIsMenuOpen(!isMenuOpen)}
-    >
+    <div ref={ref} className={menuProfileChevron} onClick={handleClickMenu}>
       <ChevronIcon />
     </div>
   ))
@@ -119,6 +120,14 @@ export default function Header(): JSX.Element {
               <li className={headerLi}>
                 <Link href={'/lobbies'}>
                   <a>Lobby</a>
+                </Link>
+              </li>
+              <li className={headerLi}>
+                <hr className={hrV} />
+              </li>
+              <li className={headerLi}>
+                <Link href={'/friends'}>
+                  <a>Friends</a>
                 </Link>
               </li>
             </ul>
@@ -179,7 +188,9 @@ export default function Header(): JSX.Element {
               ) : (
                 <li className={cn(headerLi, signin)}>
                   {/* <Icon /> */}
-                  <a href={process.env.BACKEND_URL + '/auth/steam'}>Sign In</a>
+                  <a href={process.env.NEXT_BACKEND_URL + '/auth/steam'}>
+                    Sign In
+                  </a>
                 </li>
               )}
             </ul>

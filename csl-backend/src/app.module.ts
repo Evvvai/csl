@@ -1,10 +1,10 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NODE_ENV, TYPEORM_MAIN } from '@environments';
 import { join } from 'path';
 import { CacheService, LoggingInterceptor } from './config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ConfigService } from './shared/services/config.service';
 
 // Module
 import { UsersModule } from './users/users.module';
@@ -15,35 +15,30 @@ import { ConnectedUserModule } from './connected-user/connected-user.module';
 import { ConnectedRoomModule } from './connected-room/connected-room.module';
 import { RoomsUsersModule } from './rooms-users/rooms-users.module';
 import { FriendsUserModule } from './friends-user/friends-user.module';
-
-// Entity
-import { User } from './users/entities/user.entity';
-import { Room } from './room/entities/room.entity';
-import { ConnectedRoom } from './connected-room/entities/connected-room.entity';
-import { ConnectedUser } from './connected-user/entities/connected-user.entity';
-import { RoomsUsers } from './rooms-users/entities/rooms-users.entity';
-import { FriendsUser } from './friends-user/entities/friends-user.entity';
+import { ConnectedLobbyModule } from './connected-lobby/connected-lobby.module';
+import { LobbyUsersModule } from './lobby-users/lobby-users.module';
+import { LobbiesModule } from './lobbies/lobbies.module';
+import { SharedModule } from './shared/shared.module';
+import { RedisModule } from 'nestjs-redis';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: {
+        origin: '*',
+        credentials: true,
+      },
     }),
     CacheModule.registerAsync({
       useClass: CacheService,
     }),
-    TypeOrmModule.forRoot({
-      ...TYPEORM_MAIN,
-      synchronize: NODE_ENV === 'production' ? false : true,
-      entities: [
-        User,
-        ConnectedUser,
-        Room,
-        ConnectedRoom,
-        RoomsUsers,
-        FriendsUser,
-      ],
+    TypeOrmModule.forRootAsync({
+      imports: [SharedModule],
+      useFactory: (configService: ConfigService) => configService.typeOrmConfig,
+      inject: [ConfigService],
     }),
+    // RedisModule.register({ url: 'redis://127.0.0.1:6379/0' }),
     UsersModule,
     AuthModule,
     SocketModule,
@@ -52,6 +47,9 @@ import { FriendsUser } from './friends-user/entities/friends-user.entity';
     ConnectedUserModule,
     RoomsUsersModule,
     FriendsUserModule,
+    LobbiesModule,
+    ConnectedLobbyModule,
+    LobbyUsersModule,
   ],
   providers: [
     {

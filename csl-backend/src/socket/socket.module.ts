@@ -6,6 +6,9 @@ import { ConnectedUserModule } from '../connected-user/connected-user.module';
 import { ConnectedRoomModule } from '../connected-room/connected-room.module';
 import { RoomModule } from 'src/room/room.module';
 import { RoomsUsersModule } from 'src/rooms-users/rooms-users.module';
+import { SocketRoomGateway } from './socket-room.gateway';
+import { SocketInviteGateway } from './socket-invite.gateway';
+import { SocketLobbyGateway } from './socket-lobby.gateway';
 
 @Module({
   imports: [
@@ -16,6 +19,11 @@ import { RoomsUsersModule } from 'src/rooms-users/rooms-users.module';
     RoomModule,
     RoomsUsersModule,
   ],
-  providers: [SocketGateway],
+  providers: [
+    SocketGateway,
+    SocketRoomGateway,
+    SocketInviteGateway,
+    SocketLobbyGateway,
+  ],
 })
 export class SocketModule {}

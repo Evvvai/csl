@@ -5,7 +5,7 @@ import { useTypesSelector } from '../useTypesSelector'
 import { useCallback, useMemo } from 'react'
 import { clientHandle } from '../../../utils/graphql/index'
 import { USER_NEW_FRIENDS } from 'types/graphql/mutation'
-import { Room, User } from '@store'
+import { Friend, Room, User } from '@store'
 
 // Friend Hook Selector / Dispatch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,11 +21,13 @@ export const useFriend = () => {
   const { isFriendOpen, friends, isFriendLoad, invitedFriends } =
     useTypesSelector((state) => state.friend)
 
-  const updateFriends = useCallback(async () => {
+  const updateFriends = useCallback(async (): Promise<Friend[]> => {
     const { data, errors } = await clientHandle(USER_NEW_FRIENDS, {})
 
-    if (data) updatedFriends(data.userNewFriends)
     // Must be create sync callback
+    if (data && !errors) updatedFriends(data.userNewFriends)
+
+    return data.userNewFriends
   }, [])
 
   const sentInvite = useCallback(async (user: User, room: Room) => {

@@ -7,8 +7,8 @@ export default class SocketClient {
   socket: Socket | null | undefined
 
   connect() {
-    if (process.env.BACKEND_URL) {
-      this.socket = io(process.env.BACKEND_URL, {
+    if (process.env.NEXT_BACKEND_URL) {
+      this.socket = io(process.env.NEXT_BACKEND_URL, {
         extraHeaders: {
           Authorization: getToken(),
         },

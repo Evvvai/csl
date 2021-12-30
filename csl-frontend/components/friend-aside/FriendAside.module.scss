@@ -163,8 +163,13 @@
     flex-direction: column;
     justify-content: flex-end;
 
+    max-width: 200px;
+
     :first-child {
       cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 

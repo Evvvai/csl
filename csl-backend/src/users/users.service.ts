@@ -3,13 +3,9 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom } from 'rxjs';
-import {
-  GetPlayerSummaries,
-  SteamAPIAuthService,
-} from 'src/auth/steamapi-auth.service';
+import { GetPlayerSummaries } from 'src/auth/steamapi-auth.service';
 import { FriendsUserService } from 'src/friends-user/friends-user.service';
 import { In, Repository } from 'typeorm';
-import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UserI } from './entities/user.interface';
 
@@ -87,11 +83,6 @@ export class UsersService {
     return user;
   }
 
-  createUser(createUserInput: CreateUserInput) {
-    const newUser = this.usersRepository.create(createUserInput);
-    return this.usersRepository.save(newUser);
-  }
-
   // Steam
   async findUserBySteamId64(steamId64: string): Promise<User> {
     return await this.usersRepository.findOne({
@@ -125,6 +116,13 @@ export class UsersService {
     user.avatarfull = profile.avatarfull;
 
     return await this.usersRepository.save(user);
+  }
+
+  async updateLastSeen(user: User) {
+    return this.usersRepository.save({
+      ...user,
+      lastLogin: new Date(),
+    });
   }
 
   async getAllFriends(userId: number) {

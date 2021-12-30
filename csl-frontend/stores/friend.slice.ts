@@ -37,7 +37,10 @@ const friendSlice = createSlice({
     },
     friendOffline: (state, { payload }: PayloadAction<number>) => {
       state.friends = state.friends.map((val) => {
-        if (val.id === payload) val.online = false
+        if (val.id === payload) {
+          val.online = false
+          val.lastLogin = new Date()
+        }
         return val
       })
     },

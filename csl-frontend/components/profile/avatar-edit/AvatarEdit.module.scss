@@ -48,8 +48,9 @@ $width-base: 400px;
 
 .paPreview {
   position: relative;
-  width: 100%;
   max-height: $width-base;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 
   &Info {
@@ -80,9 +81,9 @@ $width-base: 400px;
   &Img {
     height: 100%;
     width: 100%;
-    object-position: center;
 
     object-fit: cover;
+    object-position: cover;
   }
 }
 

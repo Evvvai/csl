@@ -1,34 +1,40 @@
 import {
+  ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/users/entities/user.entity';
-import { CLIENT_HOST } from '@environments';
+import { CLIENT_HOST, PORT, SERVER_HOST } from '@environments';
 import { ConnectedRoomService } from 'src/connected-room/connected-room.service';
 import { ConnectedUserService } from 'src/connected-user/connected-user.service';
-import { RoomI } from 'src/room/entities/room.interface';
 import { RoomService } from 'src/room/room.service';
 import {
   FriendI,
   StatusFriend,
 } from 'src/friends-user/entities/friend.interface';
 import { ConnectedUserI } from 'src/connected-user/entities/connected-user.interface';
-import { UserI } from 'src/users/entities/user.interface';
 import { RoomsUsersService } from 'src/rooms-users/rooms-users.service';
-import { StatusRoom } from 'src/room/entities/status-room';
-// import { InjectConnection } from '@nestjs/typeorm';
-// import { Connection } from 'typeorm';
+import * as os from 'os';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:8080', 'http://localhost:3000', CLIENT_HOST],
+    origin: [
+      'https://www.surfcombat.xyz',
+      'https://apishka.xyz:8080',
+      'https://apishka.xyz:8080/socket.io',
+      'http://localhost:8080',
+      'http://localhost:3000',
+      CLIENT_HOST,
+      SERVER_HOST + ':' + PORT,
+    ],
+    credentials: true,
   },
 })
 export class SocketGateway
@@ -38,9 +44,6 @@ export class SocketGateway
   server: Server;
 
   constructor(
-    // @InjectConnection('db')
-    // private connection: Connection,
-
     private userService: UsersService,
     private authService: AuthService,
     private connectedUserService: ConnectedUserService,
@@ -51,9 +54,12 @@ export class SocketGateway
 
   async onModuleInit() {
     await this.connectedUserService.deleteAllConnection();
-    await this.roomService.deleteAllRooms();
-    // await this.connectedRoomService.deleteAllConnection();
-    console.log('onModuleInit');
+    Logger.debug(' > onModuleInit');
+  }
+
+  afterInit(server: Server) {
+    const numCPUs = os.cpus().length;
+    Logger.debug(' > afterInit ' + numCPUs);
   }
 
   private disconnect(socket: Socket) {
@@ -61,7 +67,7 @@ export class SocketGateway
     socket.disconnect();
   }
 
-  async handleConnection(socket: Socket) {
+  async handleConnection(@ConnectedSocket() socket: Socket) {
     try {
       const decodedToken = await this.authService.verifyJwt(
         socket.handshake.headers.authorization,
@@ -89,6 +95,7 @@ export class SocketGateway
       const activeRoom = await this.roomsUsersService.getRoomByUser(
         socket.data.user,
       );
+
       if (activeRoom) {
         this.connectedRoomService.create({
           socketId: socket.id,
@@ -150,7 +157,7 @@ export class SocketGateway
           });
       }
 
-      console.log(' > handleConnection', socket.data.user.username);
+      Logger.debug(' > handleConnection', socket.data.user.username);
       return this.server.to(socket.id).emit('connected');
     } catch (e) {
       return this.disconnect(socket);
@@ -163,8 +170,11 @@ export class SocketGateway
       socket.data.user,
     );
 
-    // Notify friend about user is offline
+    // Notify friend about user is offline and update last seen
     if (isLastConnect.length === 0) {
+      this.userService.updateLastSeen(socket.data.user);
+
+      if (!socket.data.friends) return;
       const onlineFriends = await this.connectedUserService.getConnects(
         socket.data.friends.map((x) => x.id),
       );
@@ -176,7 +186,7 @@ export class SocketGateway
       });
     }
     socket.disconnect();
-    console.log(' > handleDisconnect', socket.data.user.username);
+    Logger.debug(' > handleDisconnect', socket.data.user.username);
   }
 
   // @SubscribeMessage('connection')
@@ -186,201 +196,13 @@ export class SocketGateway
 
   /**
    *
-   * Room
-   *
-   **/
-
-  @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: RoomI) {
-    const newRoom = await this.connectedRoomService.create({
-      socketId: socket.id,
-      connectedUserId: socket.data.connectedId,
-      roomId: room.id,
-    });
-
-    socket.data.sockets.forEach(async (val) => {
-      await this.connectedRoomService.create({
-        socketId: val.socketId,
-        connectedUserId: val.id,
-        roomId: newRoom.roomId,
-      });
-
-      this.server.to(val.socketId).emit('sync/roomCreated', room);
-    });
-
-    console.log('createRoom');
-  }
-
-  @SubscribeMessage('joinRoom')
-  async onJoinRoom(socket: Socket, room: RoomI) {
-    const newRoom = await this.roomService.getRoomById(room.id);
-    const users = await this.roomsUsersService.getUsersByRoom(room);
-
-    if (room.maxPlayers === users.length) {
-      this.server.to(socket.id).emit('room/joinError');
-    } else {
-      this.roomService.updateStatus(room.id, StatusRoom.PENDING);
-      const connected = await this.connectedRoomService.getAllConnectionByRoom(
-        newRoom,
-      );
-      newRoom.users = users;
-      newRoom.users.push(socket.data.user);
-      connected.forEach(async (connect) => {
-        this.server
-          .to(connect.socketId)
-          .emit('room/userJoin', socket.data.user);
-      });
-
-      this.roomsUsersService.addUserToRoom(room, socket.data.user);
-      this.server.to(socket.id).emit('room/joinRoom', newRoom);
-      this.connectedRoomService.create({
-        socketId: socket.id,
-        connectedUserId: socket.data.connectedId,
-        roomId: room.id,
-      });
-      socket.data.sockets.forEach(async (connect) => {
-        this.server.to(connect.socketId).emit('sync/joinRoom', newRoom);
-        this.connectedRoomService.create({
-          socketId: connect.socketId,
-          connectedUserId: connect.id,
-          roomId: room.id,
-        });
-      });
-    }
-
-    // Got message chat and emit
-    // await this.server.to(socket.id).emit('messages', messages);
-    // console.log('joinRoom');
-  }
-
-  @SubscribeMessage('leaveRoom')
-  async onLeaveRoom(socket: Socket, room: RoomI) {
-    this.connectedRoomService.deleteBySocketId(socket.id);
-    this.connectedRoomService.deleteBySocketIds(
-      [...socket.data.sockets].map((x) => x.socketId),
-    );
-    this.roomService.updateStatus(room.id, StatusRoom.PENDING);
-    this.roomsUsersService.removeUser(socket.data.user);
-
-    const connected = await this.connectedRoomService.getAllConnectionByRoom(
-      room,
-    );
-    connected.forEach(async (connect) => {
-      this.server.to(connect.socketId).emit('room/userLeave', socket.data.user);
-    });
-    socket.data.sockets.forEach(async (connect) => {
-      this.server.to(connect.socketId).emit('sync/leaveRoom');
-    });
-
-    // console.log('leaveRoom');
-  }
-
-  @SubscribeMessage('deleteRoom')
-  async onDeleteRoom(socket: Socket, room: RoomI) {
-    const connectedRooms = await this.connectedRoomService.findByRoom(room);
-
-    connectedRooms.forEach((connect) => {
-      this.server.to(connect.socketId).emit('room/deleted', room);
-    });
-
-    this.roomService.deleteRoom(room);
-
-    // console.log('deleteRoom | ', deletedRoom);
-  }
-
-  // Socket so slow..
-  // @SubscribeMessage('reConnectRoom')
-  // async onReConnectRoom(socket: Socket, room: RoomI) {
-  //   this.connectedRoomService.create({
-  //     socketId: socket.id,
-  //     connectedUserId: socket.data.connectedId,
-  //     roomId: room.id,
-  //   });
-  // }
-
-  /**
-   *
-   * Invites
-   *
-   **/
-
-  @SubscribeMessage('removeInvite')
-  async onRmoveInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
-    const invite = {
-      user: socket.data.user,
-      room: payload.room,
-      sentAt: new Date().getTime(),
-      ttl: 10 * 60,
-    };
-
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server
-        .to(user.socketId)
-        .emit('notification/removeUserInvite', invite);
-    });
-
-    // console.log(' ~ removeInvite | ', connectedUsers);
-  }
-
-  @SubscribeMessage('sentInvite')
-  async onSentInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
-    const invite = {
-      user: socket.data.user,
-      room: payload.room,
-      sentAt: new Date().getTime(),
-      ttl: 10 * 60,
-    };
-
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server.to(user.socketId).emit('notification/invite', invite);
-    });
-
-    // console.log(' ~ sentInvite | ', connectedUsers);
-  }
-
-  @SubscribeMessage('declineInvite')
-  async onDeclineInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
-    const invite = {
-      user: socket.data.user,
-      room: payload.room,
-      sentAt: new Date().getTime(),
-      ttl: 10 * 60,
-    };
-
-    socket.data.sockets.forEach(async (connect) => {
-      this.server
-        .to(connect.socketId)
-        .emit('notification/removeUserInvite', payload);
-    });
-
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server.to(user.socketId).emit('friend/declineInvite', invite);
-    });
-
-    // console.log(' ~ declineInvite | ', socket.data.sockets);
-  }
-
-  /**
-   *
    * Sync
    *
    **/
 
   @SubscribeMessage('sync')
   async syncSockets(socket: Socket, socketIds: ConnectedUserI[]) {
-    console.log('sync');
+    Logger.debug(' > sync');
     socket.data.sockets = socketIds.filter((val) => val.socketId !== socket.id);
   }
 }

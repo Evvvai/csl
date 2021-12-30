@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import style from './AuthInput.module.scss'
+import style from './MyInput.module.scss'
 
 // Style
 const { formGroup, formGroup__input, formGroup__label, Error } = style
@@ -27,11 +27,12 @@ type nameInput =
   | 'new-password'
   | 'password-confirm'
   | 'email'
+  | 'search'
 type autoCompleteInput = 'username' | 'new-password' | 'password' | 'email'
 
 // Component
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export default function AuthInput(props: Props): JSX.Element {
+export default function MyInput(props: Props): JSX.Element {
   return (
     <div className={formGroup}>
       <label className={formGroup__label}>{props.label}</label>

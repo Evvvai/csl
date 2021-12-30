@@ -21,9 +21,9 @@ const {
 
 // Components
 import Icon from 'components/icon/Icon.component'
-import AvatarEditModal from 'components/profile/AvatarEdit/AvatarEdit.component'
-import DashboardEditModal from 'components/profile/DasboardEdit/DashboardEdit.component'
 import FooterWaveIcon from '../assets/icon/FooterWave.svg'
+import AvatarEditModal from 'components/profile/avatar-edit/AvatarEdit.component'
+import DashboardEditModal from 'components/profile/dasboard-edit/DashboardEdit.component'
 
 // Custom hooks
 import { useUser } from '../hooks/store/user/useUser'

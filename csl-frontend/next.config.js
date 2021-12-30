@@ -30,9 +30,10 @@ module.exports = {
     NOT_FOUND:
       'https://garnetgaming.net/forums/uploads/monthly_2018_11/lain-transparent-static-4.gif.abf402297aef7303cde0c2da0ebc81be.gif',
     NOT_INVITES:
-      // 'https://lh3.googleusercontent.com/proxy/C5ExsFVwl-ukI8RMJQbAhCTZJzPyh-u_wQsD3HqBnFWBRLc-PpHClB4Q5CODNxZ4iR-m8qB6q8jaEsoekJCAJU9T6ciG6UFcjaZyAhWRQ0oqKRZv8GxT3rAEhMMRmFKrFvVM',
       'https://firebasestorage.googleapis.com/v0/b/csleague-2ecff.appspot.com/o/etc%2Fnot_invites.gif?alt=media&token=1b1d83e1-f6f4-4a48-85cb-5520663ced0a',
-    BACKEND_URL: process.env.NEXT_APP_BACKEND_URL,
+    NOT_PERMISSION:
+      'https://image.myanimelist.net/ui/9FMmrCQC46J-Q4IkG6w8PBvPOFvxngba4X1fu-l1uTkq2PvdpLk_ALPmLy6Tx7hy',
+    NEXT_BACKEND_URL: process.env.NEXT_BACKEND_URL,
     DASHBOARD_NULL: dashboardNull,
     AVATAR_NULL: avatarNull,
     NEXT_APIKEY: process.env.NEXT_APIKEY,
@@ -64,6 +65,27 @@ module.exports = {
     )
 
     return config
+  },
+  async headers() {
+    return [
+      {
+        // matching all API routes
+        source: '/apishka/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value:
+              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+          },
+        ],
+      },
+    ]
   },
   // headers: () => [
   //   {
