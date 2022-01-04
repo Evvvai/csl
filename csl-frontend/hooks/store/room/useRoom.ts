@@ -22,6 +22,8 @@ export const useRoom = () => {
       maxPlayers: maxPlayers,
     })
 
+    console.log('data', data)
+
     createdRoom(data.createRoom)
   }, [])
 

@@ -16,6 +16,7 @@ const socketMiddleware = (socket: any) => {
     const { type, payload } = action
 
     // Init
+    // if (type === 'app/appLoaded') {
     if (type === 'user/setUserSetting') {
       socket.connect()
 

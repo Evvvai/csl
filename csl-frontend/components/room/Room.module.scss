@@ -198,6 +198,65 @@
   }
 }
 
+.type {
+  z-index: 5;
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  opacity: 0;
+  pointer-events: none;
+
+  > * {
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    background-color: var(--color-background-content);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 40%);
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    svg {
+      height: 100%;
+      width: 100%;
+      padding: 5px;
+
+      * {
+        fill: var(--color-text);
+        color: var(--color-text);
+        stroke: var(--color-text);
+      }
+    }
+
+    &:hover {
+      box-shadow: 0 0 35px var(--color-highlight);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    transition: all 0.2s ease-out;
+  }
+  transition: all 0.2s ease-out;
+
+  &Active {
+    opacity: 1;
+    pointer-events: all;
+
+    > :nth-child(1) {
+      position: absolute;
+      margin-left: -55px;
+      margin-top: -10px;
+    }
+    > :nth-child(2) {
+      position: absolute;
+      margin-left: -25px;
+      margin-top: -50px;
+    }
+  }
+}
+
 .hr {
   &V {
     margin: 0 5px;

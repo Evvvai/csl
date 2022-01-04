@@ -1,4 +1,15 @@
+/**
+ *
+ *
+ * Need separate postgres from redis
+ * and put it into a separate service linked via rabbitmq
+ *
+ *
+ */
+
 import {
+  ConnectedSocket,
+  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -17,15 +28,7 @@ import { RoomsUsersService } from 'src/rooms-users/rooms-users.service';
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'https://www.surfcombat.xyz',
-      'https://apishka.xyz:8080',
-      'https://apishka.xyz:8080/socket.io',
-      'http://localhost:8080',
-      'http://localhost:3000',
-      CLIENT_HOST,
-      SERVER_HOST + ':' + PORT,
-    ],
+    origin: ['*', CLIENT_HOST, SERVER_HOST + ':' + PORT],
     credentials: true,
   },
 })
@@ -47,7 +50,10 @@ export class SocketInviteGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('removeInvite')
-  async onRmoveInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
+  async onRmoveInvite(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: { user: UserI; room: RoomI },
+  ) {
     const invite = {
       user: socket.data.user,
       room: payload.room,
@@ -55,21 +61,18 @@ export class SocketInviteGateway implements OnModuleInit {
       ttl: 10 * 60,
     };
 
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server
-        .to(user.socketId)
-        .emit('notification/removeUserInvite', invite);
-    });
+    this.server
+      .to('uid' + payload.user.id)
+      .emit('notification/removeUserInvite', invite);
 
     // Logger.debug(' > removeInvite');
   }
 
   @SubscribeMessage('sentInvite')
-  async onSentInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
+  async onSentInvite(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: { user: UserI; room: RoomI },
+  ) {
     const invite = {
       user: socket.data.user,
       room: payload.room,
@@ -77,25 +80,26 @@ export class SocketInviteGateway implements OnModuleInit {
       ttl: 10 * 60,
     };
 
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server.to(user.socketId).emit('notification/invite', invite);
-    });
+    this.server.to('uid' + payload.user.id).emit('notification/invite', invite);
 
     // Logger.debug(' > sentInvite');
   }
 
   @SubscribeMessage('declineInvite')
-  async onDeclineInvite(socket: Socket, payload: { user: UserI; room: RoomI }) {
+  async onDeclineInvite(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: { user: UserI; room: RoomI },
+  ) {
     const invite = {
       user: socket.data.user,
       room: payload.room,
       sentAt: new Date().getTime(),
       ttl: 10 * 60,
     };
+
+    this.server
+      .to('uid' + socket.data.user.id)
+      .emit('notification/removeUserInvite', payload);
 
     socket.data.sockets.forEach(async (connect) => {
       this.server
@@ -103,13 +107,9 @@ export class SocketInviteGateway implements OnModuleInit {
         .emit('notification/removeUserInvite', payload);
     });
 
-    const connectedUsers = await this.connectedUserService.findConnect(
-      payload.user,
-    );
-
-    connectedUsers.forEach((user) => {
-      this.server.to(user.socketId).emit('friend/declineInvite', invite);
-    });
+    this.server
+      .to('uid' + payload.user.id)
+      .emit('friend/declineInvite', invite);
 
     // Logger.debug(' > declineInvite');
   }

@@ -41,7 +41,6 @@ export const useUser = () => {
     else logOut()
 
     appLoad()
-
     return !errors && data ? true : false
   }, [])
 

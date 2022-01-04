@@ -1,15 +1,27 @@
-FROM node
+# ---- Node modules ---- #
+FROM node:16.13 AS node_modules
 
-# Set working dir in the container to /
-WORKDIR /
-
-# Copy application to / directory and install dependencies
-COPY package.json ./
+COPY package*.json yarn.lock ./
 RUN yarn install
-COPY . .
-RUN yarn run build
-# Expose port 8081 to the outside once the container has launched
-EXPOSE 8080
 
-# what should be executed when the Docker image is launching
-CMD [ "node", "dist/main" ]
+
+# ---- Build ---- #
+FROM node:16.13 AS dist
+
+COPY --from=node_modules node_modules ./node_modules
+COPY . ./
+RUN yarn build
+
+
+# ---- Release ---- #
+FROM node:16.13-alpine
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY --from=dist dist /usr/src/app/dist
+COPY --from=node_modules node_modules /usr/src/app/node_modules
+COPY . /usr/src/app
+
+EXPOSE 8080
+CMD [ "yarn", "start:prod" ]

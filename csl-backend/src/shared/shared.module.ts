@@ -1,4 +1,10 @@
-import { JWT_SECRET } from '@environments';
+import {
+  JWT_SECRET,
+  REDIS_HOST,
+  REDIS_PASSWORD,
+  REDIS_PORT,
+} from '@environments';
+import { RedisModule } from '@nestjs-modules/ioredis';
 import { HttpModule } from '@nestjs/axios';
 import { Module, Global } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
@@ -6,8 +12,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from './services/config.service';
 import { GeneratorService } from './services/generator.service';
 import { ValidatorService } from './services/validator.service';
+import { RediskaService } from './services/rediska.service';
 
-const providers = [ConfigService, ValidatorService, GeneratorService];
+const providers = [
+  ConfigService,
+  ValidatorService,
+  GeneratorService,
+  RediskaService,
+];
 
 @Global()
 @Module({
@@ -23,6 +35,13 @@ const providers = [ConfigService, ValidatorService, GeneratorService];
         // },
       }),
       inject: [ConfigService],
+    }),
+    RedisModule.forRoot({
+      config: {
+        host: REDIS_HOST,
+        port: REDIS_PORT,
+        password: REDIS_PASSWORD,
+      },
     }),
   ],
   exports: [...providers, HttpModule, JwtModule],

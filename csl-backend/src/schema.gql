@@ -33,12 +33,6 @@ type User {
   role: String!
 }
 
-type LobbyUser {
-  team: String!
-  userId: Float!
-  lobbyId: Float!
-}
-
 type Lobby {
   id: Int!
   name: String
@@ -63,8 +57,6 @@ type Query {
   friends(userId: Float!): [User!]!
   activeRoom: Room!
   room(id: Float!): Room!
-  lobbies: [Lobby!]!
-  lobbyUsers: [LobbyUser!]!
 }
 
 type Mutation {
@@ -74,6 +66,7 @@ type Mutation {
   auth: UserToken!
   createRoom(input: CreateRoomInput!): Room!
   removeRoom: Boolean!
+  createLobby(input: CreateLobbyInput!): Lobby!
 }
 
 input CreateRoomInput {
@@ -85,4 +78,9 @@ enum MaxPlayers {
   TWO
   THREE
   FIVE
+}
+
+input CreateLobbyInput {
+  """Max Players on lobby"""
+  maxPlayers: MaxPlayers!
 }

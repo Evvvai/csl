@@ -4,6 +4,7 @@ import { combineReducers } from 'redux'
 import appSlice from './app.slice'
 import userSlice from './user.slice'
 import roomSlice from './room.slice'
+import lobbySlice from './lobby.slice'
 import friendSlice from './friend.slice'
 import notificationSlice from './notification.slice'
 
@@ -12,6 +13,7 @@ export const rootReducer = combineReducers({
   [appSlice.name]: appSlice.reducer,
   [userSlice.name]: userSlice.reducer,
   [roomSlice.name]: roomSlice.reducer,
+  [lobbySlice.name]: lobbySlice.reducer,
   [friendSlice.name]: friendSlice.reducer,
   [notificationSlice.name]: notificationSlice.reducer,
 })

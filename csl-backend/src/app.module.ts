@@ -19,7 +19,6 @@ import { ConnectedLobbyModule } from './connected-lobby/connected-lobby.module';
 import { LobbyUsersModule } from './lobby-users/lobby-users.module';
 import { LobbiesModule } from './lobbies/lobbies.module';
 import { SharedModule } from './shared/shared.module';
-import { RedisModule } from 'nestjs-redis';
 
 @Module({
   imports: [
@@ -38,7 +37,6 @@ import { RedisModule } from 'nestjs-redis';
       useFactory: (configService: ConfigService) => configService.typeOrmConfig,
       inject: [ConfigService],
     }),
-    // RedisModule.register({ url: 'redis://127.0.0.1:6379/0' }),
     UsersModule,
     AuthModule,
     SocketModule,

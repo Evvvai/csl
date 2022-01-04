@@ -1,5 +1,16 @@
 version: "3.7"
 services:
+  redis:
+    image: ${IMAGE_REDIS}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "${PORT_REDIS}:${PORT_REDIS}"
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - default
+    restart: always
   postgres:
     image: ${IMAGE_POSTGRES}
     environment:
@@ -9,15 +20,16 @@ services:
     ports:
       - "${PORT_DB}:${PORT_DB}"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
     networks:
       - default
     restart: always
   nest:
     # image: ${IMAGE_NEST}
     build:
-      context: ./csurf-league-backend
+      context: ./csl-backend
       dockerfile: Dockerfile
+    container_name: csl-backend
     environment:
       PORT: ${PORT_API}
       POSTGRES_PORT: ${PORT_DB}
@@ -34,12 +46,18 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
 
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
     ports:
       - ${PORT_NEST}:${PORT_NEST}
     depends_on:
       - postgres
+      - redis
     links:
       - postgres:postgres
+      - redis:redis
     networks:
       - default
     restart: always
@@ -47,8 +65,9 @@ services:
   next:
     # image: ${IMAGE_NEXT}
     build:
-      context: ./csurf-league-frontend
+      context: ./csl-frontend
       dockerfile: Dockerfile
+    container_name: csl-frontend
     environment:
       NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
       NEXT_BACKEND_URL: ${NEXT_BACKEND_URL}
@@ -62,4 +81,5 @@ services:
     restart: always
     command: npm run dev
 volumes:
-  pgdata:
+  postgres-data:
+  redis-data:

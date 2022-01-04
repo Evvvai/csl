@@ -118,7 +118,7 @@ const Lobbies = (props: Props) => {
                   <hr className={hrLobby} />
 
                   <div className={hrCircle}>
-                    <div className={cn(innerLeft, x2)}>
+                    <div className={cn(innerLeft, x5)}>
                       <div className={innerPlayer}>
                         <span className={nonePlayer}></span>
                       </div>
@@ -126,12 +126,18 @@ const Lobbies = (props: Props) => {
                         <div>1111</div>
                         <img src={process.env.AVATAR_NULL} />
                       </div>
-                      {/* <div className={innerPlayer}></div> */}
-                      {/* <div className={innerPlayer}></div> */}
-                      {/* <div className={innerPlayer}></div> */}
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
                     </div>
                     <span>5x5</span>
-                    <div className={cn(innerRight, x2)}>
+                    <div className={cn(innerRight, x5)}>
                       <div className={innerPlayer}>
                         <img src={process.env.AVATAR_NULL} />
                         <div>1111</div>
@@ -140,9 +146,15 @@ const Lobbies = (props: Props) => {
                         <img src={process.env.AVATAR_NULL} />
                         <div>1111</div>
                       </div>
-                      {/* <div className={innerPlayer}></div> */}
-                      {/* <div className={innerPlayer}></div> */}
-                      {/* <div className={innerPlayer}></div> */}
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
+                      <div className={innerPlayer}>
+                        <span className={nonePlayer}></span>
+                      </div>
                     </div>
                   </div>
                 </div>

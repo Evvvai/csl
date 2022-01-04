@@ -22,6 +22,11 @@ const END_POINT: string = process.env.END_POINT || 'graphql';
 const RATE_LIMIT_MAX: number = +process.env.RATE_LIMIT_MAX || 10_000;
 const GRAPHQL_DEPTH_LIMIT: number = +process.env.GRAPHQL_DEPTH_LIMIT || 3;
 
+// redis
+const REDIS_HOST: string = process.env.REDIS_HOST || '127.0.0.1';
+const REDIS_PORT: number = +process.env.REDIS_PORT || 6379;
+const REDIS_PASSWORD: string = process.env.REDIS_PASSWORD || 'password';
+
 // typeorm
 const DATABASE_TYPE: DB = db[process.env.DATABASE_TYPE] || db[0];
 const DATABASE_HOST: string = process.env.DATABASE_HOST || 'localhost';
@@ -70,4 +75,7 @@ export {
   DEBUG_COLOR,
   LOG_COLOR,
   ERROR_COLOR,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
 };

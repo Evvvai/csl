@@ -1,8 +1,16 @@
+/**
+ *
+ *
+ * Need separate postgres from redis
+ * and put it into a separate service linked via rabbitmq
+ *
+ *
+ */
+
 import {
   ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -19,21 +27,14 @@ import {
   FriendI,
   StatusFriend,
 } from 'src/friends-user/entities/friend.interface';
-import { ConnectedUserI } from 'src/connected-user/entities/connected-user.interface';
 import { RoomsUsersService } from 'src/rooms-users/rooms-users.service';
 import * as os from 'os';
+import { RediskaService } from '../shared/services/rediska.service';
+import { ConfigService } from '../shared/services/config.service';
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'https://www.surfcombat.xyz',
-      'https://apishka.xyz:8080',
-      'https://apishka.xyz:8080/socket.io',
-      'http://localhost:8080',
-      'http://localhost:3000',
-      CLIENT_HOST,
-      SERVER_HOST + ':' + PORT,
-    ],
+    origin: ['*', CLIENT_HOST, SERVER_HOST + ':' + PORT],
     credentials: true,
   },
 })
@@ -50,16 +51,18 @@ export class SocketGateway
     private connectedRoomService: ConnectedRoomService,
     private roomService: RoomService,
     private roomsUsersService: RoomsUsersService,
+
+    public readonly rediskaService: RediskaService,
   ) {}
 
   async onModuleInit() {
     await this.connectedUserService.deleteAllConnection();
+    await this.rediskaService.clear();
     Logger.debug(' > onModuleInit');
   }
 
-  afterInit(server: Server) {
-    const numCPUs = os.cpus().length;
-    Logger.debug(' > afterInit ' + numCPUs);
+  async afterInit(server: Server) {
+    Logger.debug(' > afterInit ' + os.cpus().length);
   }
 
   private disconnect(socket: Socket) {
@@ -80,16 +83,18 @@ export class SocketGateway
 
       /****************************************************************/
 
-      socket.data.sockets = [];
-      socket.data.user = user;
-
       // Save connection to DB
+      // *Postgres
       const connect = await this.connectedUserService.connectUser({
         socketId: socket.id,
         userId: user.id,
       });
+      // *Redis
+      const connectR = await this.rediskaService.add(user.id, socket.id);
 
+      socket.data.user = user;
       socket.data.connectedId = connect.id;
+      socket.join('uid' + user.id);
 
       // Check if user have active room
       const activeRoom = await this.roomsUsersService.getRoomByUser(
@@ -97,18 +102,30 @@ export class SocketGateway
       );
 
       if (activeRoom) {
+        // *Postgres
         this.connectedRoomService.create({
           socketId: socket.id,
           connectedUserId: socket.data.connectedId,
           roomId: activeRoom.roomId,
         });
+
+        // *Redis
+        this.rediskaService.addRoom(activeRoom.roomId, user.id, socket.id);
+
+        socket.join('room' + activeRoom.roomId);
       }
 
       // Gets all friends
       const allFriends = await this.userService.getAllFriends(user.id);
+      // *Postgres
       const onlineFriends = await this.connectedUserService.getConnects(
         allFriends.map((x) => x.id),
       );
+      // *Redis
+      const onlineFriendsR = await this.rediskaService.getAllByIds(
+        allFriends.map((x) => x.id),
+      );
+
       const friends: FriendI[] = [...allFriends];
       friends.map((x) => {
         onlineFriends.find((y) => y.userId === x.id) !== undefined
@@ -123,10 +140,19 @@ export class SocketGateway
       this.server.to(socket.id).emit('friend/load', friends);
       socket.data.friends = allFriends; // Might come in handy Sorry RAM )0))
 
-      // Find allready exist connection
+      // Get all my connections
+      // *Postgres
       const allUserConnection = await this.connectedUserService.findConnect(
         user,
       );
+      // *Redis
+      const allMyConnection = await this.rediskaService.getAll(user.id);
+
+      socket.data.sockets = allUserConnection;
+      allUserConnection.forEach((socketSync) => {
+        this.server.sockets.sockets.get(socketSync.socketId).data.sockets =
+          allUserConnection;
+      });
 
       // Notife friend about user is online
       if (allUserConnection.length === 1) {
@@ -137,27 +163,7 @@ export class SocketGateway
         });
       }
 
-      // Sync socket connection
-      if (allUserConnection.length > 1) {
-        // Save my another sockets
-        allUserConnection.forEach((socket) => {
-          this.server.to(socket.socketId).emit('sync', allUserConnection);
-        });
-
-        // Sync allready exist room
-        const isHaveRoom = await this.connectedRoomService.findRoomBySocketIds(
-          allUserConnection.map((val) => val.socketId),
-        );
-
-        if (isHaveRoom)
-          await this.connectedRoomService.create({
-            socketId: socket.id,
-            connectedUserId: socket.data.connectedId,
-            roomId: isHaveRoom.roomId,
-          });
-      }
-
-      Logger.debug(' > handleConnection', socket.data.user.username);
+      Logger.debug(' > handleConnection | ' + socket.data.user.username);
       return this.server.to(socket.id).emit('connected');
     } catch (e) {
       return this.disconnect(socket);
@@ -165,44 +171,37 @@ export class SocketGateway
   }
 
   async handleDisconnect(socket: Socket) {
+    // Remove connection
+    // *Postgres
     await this.connectedUserService.deleteBySocketId(socket.id);
     const isLastConnect = await this.connectedUserService.findConnect(
       socket.data.user,
     );
+    // *Redis
+    await this.rediskaService.remove(socket.data.user.id, socket.id);
+    const isLast = await this.rediskaService.ammount(socket.data.user.id);
 
     // Notify friend about user is offline and update last seen
     if (isLastConnect.length === 0) {
       this.userService.updateLastSeen(socket.data.user);
 
       if (!socket.data.friends) return;
+      // *Postgres
       const onlineFriends = await this.connectedUserService.getConnects(
         socket.data.friends.map((x) => x.id),
       );
+      // *Redis
+      const onlineFriendsR = await this.rediskaService.getAllByIds(
+        socket.data.friends.map((x) => x.id),
+      );
 
-      onlineFriends.forEach((user) => {
-        return this.server
+      onlineFriends.forEach(async (user) => {
+        this.server
           .to(user.socketId)
           .emit('friend/offline', socket.data.user.id);
       });
     }
     socket.disconnect();
-    Logger.debug(' > handleDisconnect', socket.data.user.username);
-  }
-
-  // @SubscribeMessage('connection')
-  // async newConnection(socket: Socket, room: any) {
-  //   console.log('connection');
-  // }
-
-  /**
-   *
-   * Sync
-   *
-   **/
-
-  @SubscribeMessage('sync')
-  async syncSockets(socket: Socket, socketIds: ConnectedUserI[]) {
-    Logger.debug(' > sync');
-    socket.data.sockets = socketIds.filter((val) => val.socketId !== socket.id);
+    Logger.debug(' > handleDisconnect | ' + socket.data.user.username);
   }
 }

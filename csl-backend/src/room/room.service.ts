@@ -27,16 +27,16 @@ export class RoomService {
     const newRoom = await this.roomRepository.save(room);
     await this.roomsUsersService.addUserToRoom(newRoom, user);
 
-    return await this.roomRepository.save(newRoom);
-  }
-
-  async deleteRoom(room: RoomI) {
-    return this.roomRepository.delete({ id: room.id });
+    return newRoom;
   }
 
   async remove(user: UserI) {
     const room = await this.roomRepository.delete({ captainId: user.id });
     return room.affected > 0 ? true : false;
+  }
+
+  async deleteRoom(room: RoomI) {
+    return this.roomRepository.delete({ id: room.id });
   }
 
   async deleteAllRooms() {

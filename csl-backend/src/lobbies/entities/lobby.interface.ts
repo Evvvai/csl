@@ -4,16 +4,16 @@ import { MaxPlayers } from 'src/room/entities/max-players.enum';
 import { StatusLobby } from './status-lobby';
 
 export interface LobbyI {
-  id: number;
-  name: string;
-  firstTeamName: string;
-  secondTeamName: string;
-  captainId: number;
+  id?: number;
+  name?: string;
+  firstTeamName?: string;
+  secondTeamName?: string;
+  captainId?: number;
   maxPlayers: MaxPlayers;
-  isPublic: boolean;
-  status: StatusLobby;
-  createdAt: Date;
-  udaptedAt: Date;
+  isPublic?: boolean;
+  status?: StatusLobby;
+  createdAt?: Date;
+  udaptedAt?: Date;
 
   /////////////////////////////////////////////////////////////////////////////////
   // Relations

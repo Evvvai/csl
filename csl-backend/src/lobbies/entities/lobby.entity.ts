@@ -24,11 +24,11 @@ export class Lobby {
   @Field({ nullable: true })
   name: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, default: 'Team_CT' })
   @Field({ nullable: false })
   firstTeamName: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, default: 'Team_T' })
   @Field({ nullable: false })
   secondTeamName: string;
 

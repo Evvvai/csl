@@ -1,4 +1,15 @@
+/**
+ *
+ *
+ * Need separate postgres from redis
+ * and put it into a separate service linked via rabbitmq
+ *
+ *
+ */
+
 import {
+  ConnectedSocket,
+  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -17,15 +28,7 @@ import { StatusRoom } from 'src/room/entities/status-room';
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'https://www.surfcombat.xyz',
-      'https://apishka.xyz:8080',
-      'https://apishka.xyz:8080/socket.io',
-      'http://localhost:8080',
-      'http://localhost:3000',
-      CLIENT_HOST,
-      SERVER_HOST + ':' + PORT,
-    ],
+    origin: ['*', CLIENT_HOST, SERVER_HOST + ':' + PORT],
     credentials: true,
   },
 })
@@ -48,28 +51,31 @@ export class SocketRoomGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: RoomI) {
-    const newRoom = await this.connectedRoomService.create({
-      socketId: socket.id,
-      connectedUserId: socket.data.connectedId,
-      roomId: room.id,
-    });
-
-    socket.data.sockets.forEach(async (val) => {
-      await this.connectedRoomService.create({
-        socketId: val.socketId,
-        connectedUserId: val.id,
-        roomId: newRoom.roomId,
+  async onCreateRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() room: RoomI,
+  ) {
+    socket.data.sockets.forEach(async (socketSync) => {
+      this.connectedRoomService.create({
+        socketId: socketSync.socketId,
+        connectedUserId: socketSync.id,
+        roomId: room.id,
       });
-
-      this.server.to(val.socketId).emit('sync/roomCreated', room);
+      this.server.sockets.sockets
+        .get(socketSync.socketId)
+        .join('room' + room.id);
     });
+
+    this.server.to('uid' + socket.data.user.id).emit('sync/roomCreated', room);
 
     Logger.debug(' > createRoom');
   }
 
   @SubscribeMessage('joinRoom')
-  async onJoinRoom(socket: Socket, room: RoomI) {
+  async onJoinRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() room: RoomI,
+  ) {
     const newRoom = await this.roomService.getRoomById(room.id);
     const users = await this.roomsUsersService.getUsersByRoom(room);
 
@@ -77,32 +83,26 @@ export class SocketRoomGateway implements OnModuleInit {
       this.server.to(socket.id).emit('room/joinError');
     } else {
       this.roomService.updateStatus(room.id, StatusRoom.PENDING);
-      const connected = await this.connectedRoomService.getAllConnectionByRoom(
-        newRoom,
-      );
+      this.roomsUsersService.addUserToRoom(room, socket.data.user);
       newRoom.users = users;
       newRoom.users.push(socket.data.user);
-      connected.forEach(async (connect) => {
-        this.server
-          .to(connect.socketId)
-          .emit('room/userJoin', socket.data.user);
-      });
 
-      this.roomsUsersService.addUserToRoom(room, socket.data.user);
+      this.server
+        .to('room' + newRoom.id)
+        .emit('room/userJoin', socket.data.user);
       this.server.to(socket.id).emit('room/joinRoom', newRoom);
-      this.connectedRoomService.create({
-        socketId: socket.id,
-        connectedUserId: socket.data.connectedId,
-        roomId: room.id,
-      });
+
       socket.data.sockets.forEach(async (connect) => {
-        this.server.to(connect.socketId).emit('sync/joinRoom', newRoom);
         this.connectedRoomService.create({
           socketId: connect.socketId,
           connectedUserId: connect.id,
           roomId: room.id,
         });
       });
+
+      this.server
+        .to('uid' + socket.data.user.id)
+        .emit('sync/joinRoom', newRoom);
     }
 
     // Got message chat and emit
@@ -111,7 +111,10 @@ export class SocketRoomGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('leaveRoom')
-  async onLeaveRoom(socket: Socket, room: RoomI) {
+  async onLeaveRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() room: RoomI,
+  ) {
     this.connectedRoomService.deleteBySocketId(socket.id);
     this.connectedRoomService.deleteBySocketIds(
       [...socket.data.sockets].map((x) => x.socketId),
@@ -119,25 +122,25 @@ export class SocketRoomGateway implements OnModuleInit {
     this.roomService.updateStatus(room.id, StatusRoom.PENDING);
     this.roomsUsersService.removeUser(socket.data.user);
 
-    const connected = await this.connectedRoomService.getAllConnectionByRoom(
-      room,
-    );
-    connected.forEach(async (connect) => {
-      this.server.to(connect.socketId).emit('room/userLeave', socket.data.user);
-    });
-    socket.data.sockets.forEach(async (connect) => {
-      this.server.to(connect.socketId).emit('sync/leaveRoom');
-    });
+    this.server.to('room' + room.id).emit('room/userLeave', socket.data.user);
+    this.server.to('uid' + socket.data.user.id).emit('sync/leaveRoom');
 
     // Logger.debug(' > leaveRoom');
   }
 
   @SubscribeMessage('deleteRoom')
-  async onDeleteRoom(socket: Socket, room: RoomI) {
+  async onDeleteRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() room: RoomI,
+  ) {
     const connectedRooms = await this.connectedRoomService.findByRoom(room);
 
-    connectedRooms.forEach((connect) => {
-      this.server.to(connect.socketId).emit('room/deleted', room);
+    this.server.to('room' + room.id).emit('room/deleted', room);
+
+    connectedRooms.forEach(async (socketSync) => {
+      this.server.sockets.sockets
+        .get(socketSync.socketId)
+        .leave('room' + room.id);
     });
 
     this.roomService.deleteRoom(room);

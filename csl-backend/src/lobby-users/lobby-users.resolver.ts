@@ -5,9 +5,4 @@ import { LobbyUser } from './entities/lobby-user.entity';
 @Resolver(() => LobbyUser)
 export class LobbyUsersResolver {
   constructor(private readonly lobbyUsersService: LobbyUsersService) {}
-
-  @Query(() => [LobbyUser], { name: 'lobbyUsers' })
-  findAll() {
-    return this.lobbyUsersService.findAll();
-  }
 }

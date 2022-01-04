@@ -12,24 +12,8 @@ export class ConnectedRoomService {
     private connectedRoomRepository: Repository<ConnectedRoom>,
   ) {}
 
-  async findRoomBySocketIds(socketId: string[]): Promise<ConnectedRoom> {
-    return this.connectedRoomRepository.findOne({
-      where: { socketId: In(socketId) },
-    });
-  }
-
   async create(connectedRoom: ConnectedRoomI): Promise<ConnectedRoomI> {
     return this.connectedRoomRepository.save(connectedRoom);
-  }
-
-  async getAllConnectionByRoom(room: RoomI) {
-    return this.connectedRoomRepository.find({
-      where: { roomId: room.id },
-    });
-  }
-
-  async deleteAllConnection() {
-    await this.connectedRoomRepository.createQueryBuilder().delete().execute();
   }
 
   async findByRoom(room: RoomI): Promise<ConnectedRoomI[]> {

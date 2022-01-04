@@ -95,6 +95,9 @@ $ripple-background-dark: radial-gradient(
   #e00000d0 100%
 );
 
+// Etc
+$color-highlight-dark: rgb(255, 71, 71);
+
 // Blue theme
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global
@@ -139,8 +142,10 @@ $ripple-background-blue: radial-gradient(
   #e00000d0 100%
 );
 
-// Other values
+// Etc
+$color-highlight-blue: rgba(79, 137, 246);
 
+// Other values
 $color-success: #52c41a;
 $color-warning: #faad14;
 $color-error: #f5222d;

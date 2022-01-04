@@ -5,7 +5,6 @@ import { ThemeProvider } from '../contexts/theme' // Theme Use Context
 import { wrapper } from 'stores'
 import Cookies, { parseCookies } from 'nookies'
 import { useEffect } from 'react'
-import { setUserSetting } from 'stores/user.slice'
 
 // Layouts
 import MainLayout from 'components/layouts/Main.layout'
@@ -25,6 +24,8 @@ import { AUTH } from 'types/graphql/mutation'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
+import { setUserSetting } from 'stores/user.slice'
+import { appLoaded } from 'stores/app.slice'
 
 /////////////////////////////////////////////////////////////////////////////////////
 function MyApp({ Component, pageProps }: AppProps) {
@@ -74,13 +75,16 @@ function MyApp({ Component, pageProps }: AppProps) {
 //         const cookies = ctx ? Cookies.get(ctx) : parseCookies()
 //         const token = cookies.token
 
-//         const client = new GraphQLClient(process.env.NEXT_BACKEND_URL + '/graphql', {
-//           headers: { authorization: 'Bearer ' + token },
-//         })
+//         const client = new GraphQLClient(
+//           process.env.NEXT_BACKEND_URL + '/graphql',
+//           {
+//             headers: { authorization: 'Bearer ' + token },
+//           }
+//         )
 
 //         const data = await client.request(AUTH)
-//         await store.dispatch(setUserSetting(data.auth.user))
-//         // await store.dispatch(appLoad())
+//         store.dispatch(setUserSetting(data.auth.user))
+//         console.log('data', data)
 //       } catch (err) {
 //         // console.log('err', err)
 //         return {

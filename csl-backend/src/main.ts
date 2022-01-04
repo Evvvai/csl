@@ -1,5 +1,5 @@
 import { MyLogger } from '@config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { readFileSync } from 'fs';
@@ -79,11 +79,13 @@ async function bootstrap() {
     );
 
     //  global nest setup
-    // app.useGlobalPipes(new ValidationPipe());
-    //app.useGlobalInterceptors(new LoggingInterceptor());
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+      }),
+    );
 
     app.enableShutdownHooks();
-    app.startAllMicroservices();
 
     await app.listen(PORT);
 
