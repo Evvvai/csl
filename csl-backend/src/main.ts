@@ -43,7 +43,7 @@ async function bootstrap() {
     app.use(compression());
 
     // yep
-    app.use(morgan('combined'));
+    // app.use(morgan('combined'));
 
     // added security
     app.use(helmet());
@@ -79,11 +79,11 @@ async function bootstrap() {
     );
 
     //  global nest setup
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transform: true,
-      }),
-    );
+    // app.useGlobalPipes(
+    //   new ValidationPipe({
+    //     transform: true,
+    //   }),
+    // );
 
     app.enableShutdownHooks();
 

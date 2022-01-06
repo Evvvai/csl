@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 import { clientHandle } from 'utils/graphql'
 import { CREATE_ROOM, DELETE_ROOM } from 'types/graphql/mutation'
 import { MaxPlayers, Room } from '@store'
+import { socket } from 'stores'
 
 // Room Hook Selector / Dispatch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,13 +19,11 @@ export const useRoom = () => {
   const createRoom = useCallback(async (maxPlayers: MaxPlayers) => {
     setLoading()
 
-    const { data, errors } = await clientHandle(CREATE_ROOM, {
+    const [data, errors] = await clientHandle(CREATE_ROOM, {
       maxPlayers: maxPlayers,
     })
 
-    console.log('data', data)
-
-    createdRoom(data.createRoom)
+    createdRoom(data)
   }, [])
 
   const leaveRoom = useCallback(async (room: Room) => {
@@ -34,9 +33,8 @@ export const useRoom = () => {
   const deleteRoom = useCallback(async (room: Room) => {
     setLoading()
 
-    // Not Needed cuz sockets
-    // const { data, errors } = await clientHandle(DELETE_ROOM, {})
-
+    // Idk were better here or in middleware
+    socket.emit('deleteRoom', room)
     deletedRoom(room)
   }, [])
 

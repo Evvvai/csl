@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 
+
 # testing
 /coverage
 
@@ -35,3 +36,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# data
+postgres-data
+redis-data

@@ -4,7 +4,9 @@ import { Logger } from '@nestjs/common';
 export class RediskaService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
-  // User add/remove socket connection
+  /**
+   * User socket connection
+   */
   async add(userId: number, socketId: string) {
     this.redis.sadd('user:' + userId, socketId);
   }
@@ -35,16 +37,65 @@ export class RediskaService {
     return online;
   }
 
-  // User add/remove room connection
-  async addRoom(roomId: number, userId: number, socketId: string) {
-    this.redis.hset('room:' + roomId, userId, socketId);
+  /**
+   * User room connection
+   */
+  async getAllByRoom(roomId: number): Promise<any> {
+    return this.redis.hgetall('room:' + roomId);
   }
-  async removeRoom(roomId: number, userId: number, socketId: string) {
-    this.redis.hset('room:' + roomId, userId, socketId);
+  async addToRoom(roomId: number, userId: number, socketId: string) {
+    this.redis.hset('room:' + roomId, socketId, userId);
+  }
+  async removeFromRoom(roomId: number, userId: number) {
+    const socketIds = await this.getAllByRoom(roomId);
+
+    Object.keys(socketIds).forEach(async (socketId) => {
+      if (socketIds[socketId] === userId.toString())
+        this.redis.hdel('room:' + roomId, socketId);
+    });
+  }
+  async removeRoom(roomId: number) {
+    this.redis.del('room:' + roomId);
+  }
+  async removeFromRoomBySocketId(socketId: string) {
+    const keys = await this.redis.keys('room:*');
+    keys.forEach((key) => {
+      this.redis.hdel(key, socketId);
+    });
   }
 
-  // Clear redis db
+  /**
+   * User lobby connection
+   */
+  async addToLobby(lobbyId: number, userId: number, socketId: string) {
+    this.redis.hset('lobby:' + lobbyId, socketId, userId);
+  }
+  async getAllByLobby(lobbyId: number): Promise<any> {
+    return this.redis.hgetall('lobby:' + lobbyId);
+  }
+  async removeLobby(lobbyId: number) {
+    this.redis.del('lobby:' + lobbyId);
+  }
+  async removeFromLobby(lobbyId: number, userId: number) {
+    const socketIds = await this.getAllByRoom(lobbyId);
+
+    Object.keys(socketIds).forEach(async (socketId) => {
+      if (socketIds[socketId] === userId.toString())
+        this.redis.hdel('lobby:' + lobbyId, socketId);
+    });
+  }
+  async removeFromLobbyBySocketId(socketId: string) {
+    const keys = await this.redis.keys('lobby:*');
+    keys.forEach((key) => {
+      this.redis.hdel(key, socketId);
+    });
+  }
+
+  /**
+   * Clear redis db
+   */
   async clear() {
-    // this.redis.flushall();
+    this.redis.flushall();
+    Logger.debug(' >< Redis cleared');
   }
 }

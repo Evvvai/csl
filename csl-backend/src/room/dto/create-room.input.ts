@@ -1,4 +1,4 @@
-import { InputType, Int, Field, registerEnumType } from '@nestjs/graphql';
+import { InputType, Field, registerEnumType } from '@nestjs/graphql';
 import { MaxPlayers } from '../entities/max-players.enum';
 import { RoomI } from '../entities/room.interface';
 
@@ -8,6 +8,6 @@ registerEnumType(MaxPlayers, {
 
 @InputType()
 export class CreateRoomInput implements RoomI {
-  @Field(() => MaxPlayers, { description: 'Max Players on lobby' })
+  @Field(() => MaxPlayers, { description: 'Max Players on room' })
   maxPlayers: MaxPlayers;
 }

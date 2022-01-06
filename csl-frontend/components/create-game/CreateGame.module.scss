@@ -1,0 +1,195 @@
+.createGame {
+  * {
+    user-select: none;
+  }
+
+  position: sticky;
+  bottom: 0;
+  right: 0;
+
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+
+  pointer-events: all;
+
+  &Content {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: var(--color-background-content);
+    border-radius: 125px;
+    padding: 5px;
+    gap: 5px;
+
+    margin: 10px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 40%);
+
+    border: 1px solid transparent;
+
+    &:hover {
+      box-shadow: 0 0 25px var(--color-highlight);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+      .start {
+        opacity: 1;
+        transform: translateX(-50px);
+        transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+      }
+    }
+    transition: all 0.2s ease-out;
+  }
+  transition: all 0.2s ease-out;
+}
+
+.create {
+  z-index: 15;
+
+  position: relative;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.mode {
+  z-index: 5;
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  opacity: 0;
+  pointer-events: none;
+
+  > * {
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: var(--color-background-content);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 40%);
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 0 35px var(--color-highlight);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    transition: all 0.2s ease-out;
+  }
+  transition: all 0.2s ease-out;
+
+  &Active {
+    opacity: 1;
+    pointer-events: all;
+
+    :nth-child(1) {
+      position: absolute;
+      margin-left: -45px;
+      margin-top: 0px;
+    }
+    :nth-child(2) {
+      position: absolute;
+      margin-left: -35px;
+      margin-top: -35px;
+    }
+    :nth-child(3) {
+      position: absolute;
+      margin-left: 0px;
+      margin-top: -45px;
+    }
+  }
+}
+
+.type {
+  z-index: 5;
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  opacity: 0;
+  pointer-events: none;
+
+  > * {
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    background-color: var(--color-background-content);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 40%);
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    svg {
+      height: 100%;
+      width: 100%;
+      padding: 5px;
+
+      * {
+        fill: var(--color-text);
+        color: var(--color-text);
+        stroke: var(--color-text);
+      }
+    }
+
+    &:hover {
+      box-shadow: 0 0 35px var(--color-highlight);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    transition: all 0.2s ease-out;
+  }
+  transition: all 0.2s ease-out;
+
+  &Active {
+    opacity: 1;
+    pointer-events: all;
+
+    > :nth-child(1) {
+      position: absolute;
+      margin-left: -55px;
+      margin-top: -10px;
+    }
+    > :nth-child(2) {
+      position: absolute;
+      margin-left: -25px;
+      margin-top: -50px;
+    }
+  }
+}
+
+.hr {
+  &V {
+    margin: 0 5px;
+    height: 90%;
+    width: 1px;
+    background-color: var(--color-sub-text);
+  }
+
+  &H {
+    width: 100%;
+    background-color: black;
+    height: 1px;
+    margin: 4px;
+  }
+}
+
+.move {
+  &Friend {
+    margin-right: var(--friend-aside-width);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+}

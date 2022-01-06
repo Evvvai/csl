@@ -117,15 +117,24 @@ const Profile: NextPage<Props> = ({ userData }) => {
 
 export const getServerSideProps = async (ctx) => {
   try {
-    const variables = {
+    const [data, errors] = await clientHandle(USER, {
       steamid64: ctx.params.steamid,
-    }
-    const data = await client.request(USER, variables)
+    })
 
-    return {
-      props: {
-        userData: data.findOne,
-      },
+    if (!data || errors) {
+      return {
+        props: {},
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
+        props: {
+          userData: data,
+        },
+      }
     }
   } catch (err) {
     // console.log('err', err)

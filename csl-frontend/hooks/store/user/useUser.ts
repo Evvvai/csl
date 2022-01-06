@@ -35,9 +35,9 @@ export const useUser = () => {
     }
 
     client.setHeader('authorization', token)
-    const { data, errors } = await clientHandle(AUTH, {})
+    const [data, errors] = await clientHandle(AUTH, {})
 
-    if (!errors && data) setUser(data.auth)
+    if (!errors && data) setUser(data)
     else logOut()
 
     appLoad()

@@ -25,6 +25,7 @@ import { RoomI } from 'src/room/entities/room.interface';
 import { RoomService } from 'src/room/room.service';
 import { RoomsUsersService } from 'src/rooms-users/rooms-users.service';
 import { StatusRoom } from 'src/room/entities/status-room';
+import { RediskaService } from 'src/shared/services/rediska.service';
 
 @WebSocketGateway({
   cors: {
@@ -43,9 +44,11 @@ export class SocketRoomGateway implements OnModuleInit {
     private connectedRoomService: ConnectedRoomService,
     private roomService: RoomService,
     private roomsUsersService: RoomsUsersService,
+    private rediskaService: RediskaService,
   ) {}
 
   async onModuleInit() {
+    await this.connectedRoomService.deleteAllConnection();
     await this.roomService.deleteAllRooms();
     Logger.debug(' > onModuleInitRoom');
   }
@@ -56,14 +59,20 @@ export class SocketRoomGateway implements OnModuleInit {
     @MessageBody() room: RoomI,
   ) {
     socket.data.sockets.forEach(async (socketSync) => {
-      this.connectedRoomService.create({
-        socketId: socketSync.socketId,
-        connectedUserId: socketSync.id,
-        roomId: room.id,
-      });
-      this.server.sockets.sockets
-        .get(socketSync.socketId)
-        .join('room' + room.id);
+      // *Postgres
+      // this.connectedRoomService.create({
+      //   socketId: socketSync.socketId,
+      //   connectedUserId: socketSync.id,
+      //   roomId: room.id,
+      // });
+      // *Redis
+      this.rediskaService.addToRoom(
+        room.id,
+        this.server.sockets.sockets.get(socketSync).data.user.id,
+        socketSync,
+      );
+
+      this.server.sockets.sockets.get(socketSync).join('room' + room.id);
     });
 
     this.server.to('uid' + socket.data.user.id).emit('sync/roomCreated', room);
@@ -92,12 +101,19 @@ export class SocketRoomGateway implements OnModuleInit {
         .emit('room/userJoin', socket.data.user);
       this.server.to(socket.id).emit('room/joinRoom', newRoom);
 
-      socket.data.sockets.forEach(async (connect) => {
-        this.connectedRoomService.create({
-          socketId: connect.socketId,
-          connectedUserId: connect.id,
-          roomId: room.id,
-        });
+      socket.data.sockets.forEach(async (socketSync) => {
+        // *Postgres
+        // this.connectedRoomService.create({
+        //   socketId: socketSync.socketId,
+        //   connectedUserId: socketSync.id,
+        //   roomId: room.id,
+        // });
+        // *Redis
+        this.rediskaService.addToRoom(
+          room.id,
+          this.server.sockets.sockets.get(socketSync).data.user.id,
+          socketSync,
+        );
       });
 
       this.server
@@ -115,17 +131,21 @@ export class SocketRoomGateway implements OnModuleInit {
     @ConnectedSocket() socket: Socket,
     @MessageBody() room: RoomI,
   ) {
-    this.connectedRoomService.deleteBySocketId(socket.id);
-    this.connectedRoomService.deleteBySocketIds(
-      [...socket.data.sockets].map((x) => x.socketId),
-    );
+    // *Postgres
+    // this.connectedRoomService.deleteBySocketId(socket.id);
+    // this.connectedRoomService.deleteBySocketIds(
+    //   [...socket.data.sockets].map((x) => x.socketId),
+    // );
+    // *Redis
+    this.rediskaService.removeFromRoom(room.id, socket.data.user.id);
+
     this.roomService.updateStatus(room.id, StatusRoom.PENDING);
     this.roomsUsersService.removeUser(socket.data.user);
 
     this.server.to('room' + room.id).emit('room/userLeave', socket.data.user);
     this.server.to('uid' + socket.data.user.id).emit('sync/leaveRoom');
 
-    // Logger.debug(' > leaveRoom');
+    Logger.debug(' > leaveRoom');
   }
 
   @SubscribeMessage('deleteRoom')
@@ -133,18 +153,22 @@ export class SocketRoomGateway implements OnModuleInit {
     @ConnectedSocket() socket: Socket,
     @MessageBody() room: RoomI,
   ) {
-    const connectedRooms = await this.connectedRoomService.findByRoom(room);
-
     this.server.to('room' + room.id).emit('room/deleted', room);
 
-    connectedRooms.forEach(async (socketSync) => {
-      this.server.sockets.sockets
-        .get(socketSync.socketId)
-        .leave('room' + room.id);
+    // *Postgres
+    // const connectedRooms = await this.connectedRoomService.findByRoom(room);
+    // connectedRooms.forEach(async (socketSync) => {
+    //   this.server.sockets.sockets
+    //     .get(socketSync.socketId)
+    //     .leave('room' + room.id);
+    // });
+    // *Redis
+    const socketIds = await this.rediskaService.getAllByRoom(room.id);
+    Object.keys(socketIds).forEach(async (socketId) => {
+      this.server.sockets.sockets.get(socketId).leave('room' + room.id);
     });
+    this.rediskaService.removeRoom(room.id);
 
-    this.roomService.deleteRoom(room);
-
-    // Logger.debug(' > deleteRoom', deletedRoom);
+    Logger.debug(' > deleteRoom ' + socket.data.user.username);
   }
 }

@@ -27,6 +27,8 @@ import { LobbyUsersService } from 'src/lobby-users/lobby-users.service';
 import { LobbiesService } from 'src/lobbies/lobbies.service';
 import { ConnectedLobbyService } from 'src/connected-lobby/connected-lobby.service';
 import { LobbyI } from 'src/lobbies/entities/lobby.interface';
+import { RediskaService } from 'src/shared/services/rediska.service';
+import { StatusLobby } from 'src/lobbies/entities/status-lobby';
 
 @WebSocketGateway({
   cors: {
@@ -46,35 +48,130 @@ export class SocketLobbyGateway implements OnModuleInit {
     private roomService: RoomService,
     private roomsUsersService: RoomsUsersService,
     private lobbyService: LobbiesService,
-    private lobbyUsersSService: LobbyUsersService,
+    private lobbyUsersService: LobbyUsersService,
     private connectedLobbyService: ConnectedLobbyService,
+    private rediskaService: RediskaService,
   ) {}
 
   async onModuleInit() {
-    // await this.connectedUserService.deleteAllConnection();
+    await this.connectedLobbyService.deleteAllConnection();
 
     Logger.debug(' > onModuleInitLobby');
   }
 
   @SubscribeMessage('createLobby')
-  async onCreateRoom(
+  async onCreateLobby(
     @ConnectedSocket() socket: Socket,
     @MessageBody() lobby: LobbyI,
   ) {
     socket.data.sockets.forEach(async (socketSync) => {
-      this.connectedLobbyService.create({
-        connectedUserId: socketSync.id,
-        lobbyId: lobby.id,
-      });
+      // *Postgres
+      // Not implemented
+      // *Redis
+      this.rediskaService.addToRoom(
+        lobby.id,
+        socketSync.userId,
+        socketSync.socketId,
+      );
+
+      // Sockets join
       this.server.sockets.sockets
         .get(socketSync.socketId)
         .join('lobby' + lobby.id);
     });
 
+    // Inform user about successful created lobby
     this.server
       .to('uid' + socket.data.user.id)
       .emit('sync/lobbyCreated', lobby);
 
     Logger.debug(' > createLobby');
+  }
+
+  @SubscribeMessage('deleteLobby')
+  async onDeleteLobby(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() lobby: LobbyI,
+  ) {
+    // *Postgres
+    // Not implemented
+    // *Redis
+    const socketIds = await this.rediskaService.getAllByLobby(lobby.id);
+    Object.keys(socketIds).forEach(async (socketId) => {
+      this.server.sockets.sockets.get(socketId).leave('lobby' + lobby.id);
+    });
+    this.rediskaService.removeLobby(lobby.id);
+
+    // Socket sync emit
+    this.server.to('lobby' + lobby.id).emit('lobby/deleted', lobby);
+
+    Logger.debug(' > deleteLobby ' + socket.data.user.username);
+  }
+
+  @SubscribeMessage('joinLobby')
+  async onJoinLobby(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() lobby: LobbyI,
+  ) {
+    const newLobby = await this.lobbyService.getById(lobby.id);
+    const users = await this.lobbyUsersService.getUsersByLobby(lobby);
+
+    if (lobby.maxPlayers === users.length / 2) {
+      this.server.to(socket.id).emit('lobby/joinError');
+    } else {
+      // Db update
+      this.lobbyService.updateStatus(lobby.id, StatusLobby.PENDING);
+      this.lobbyUsersService.addUserToLobby(lobby, socket.data.user);
+      newLobby.users = users;
+      newLobby.users.push(socket.data.user);
+
+      // Socket sync emit
+      this.server
+        .to('lobby' + newLobby.id)
+        .emit('lobby/userJoin', socket.data.user);
+      this.server.to(socket.id).emit('lobby/joinLobby', newLobby);
+
+      socket.data.sockets.forEach(async (socketSync) => {
+        // *Postgres
+        // Not implemented
+        // *Redis
+        this.rediskaService.addToLobby(
+          lobby.id,
+          socketSync.userId,
+          socketSync.socketId,
+        );
+      });
+
+      this.server
+        .to('uid' + socket.data.user.id)
+        .emit('sync/joinLobby', newLobby);
+    }
+
+    // Got message chat and emit
+    // await this.server.to(socket.id).emit('messages', messages);
+    // Logger.debug(' > joinRoom');
+  }
+
+  @SubscribeMessage('leaveLobby')
+  async onLeaveLobby(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() lobby: LobbyI,
+  ) {
+    // *Postgres
+    // Not implemented
+    // *Redis
+    this.rediskaService.removeFromLobby(lobby.id, socket.data.user.id);
+
+    // Db update
+    this.lobbyService.updateStatus(lobby.id, StatusLobby.PENDING);
+    this.roomsUsersService.removeUser(socket.data.user);
+
+    // Socket sync emit
+    this.server
+      .to('lobby' + lobby.id)
+      .emit('lobby/userLeave', socket.data.user);
+    this.server.to('uid' + socket.data.user.id).emit('sync/leaveLobby');
+
+    Logger.debug(' > leaveRoom');
   }
 }

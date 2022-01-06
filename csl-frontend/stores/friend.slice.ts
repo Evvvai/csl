@@ -7,7 +7,10 @@ const initialState: FriendState = {
   isFriendOpen: false,
 
   friends: [],
+  filteredFriendsIds: [],
   invitedFriends: [],
+
+  term: '',
 }
 
 // Slice
@@ -25,6 +28,7 @@ const friendSlice = createSlice({
     loadFriends: (state, { payload }: PayloadAction<Friend[]>) => {
       state.isFriendLoad = true
       state.friends = payload
+      state.filteredFriendsIds = payload.map((friend) => friend.id)
     },
     updatedFriends: (state, { payload }: PayloadAction<Friend[]>) => {
       state.friends = [...state.friends, ...payload]
@@ -52,6 +56,14 @@ const friendSlice = createSlice({
         (invite) => invite.id !== payload?.user.id
       )
     },
+    filteredFriends: (
+      state,
+      { payload }: PayloadAction<{ ids: number[]; term: string }>
+    ) => {
+      state.filteredFriendsIds = payload.ids
+      state.term = payload.term
+    },
+
     // syncRemoveInvite: (state, { payload }: PayloadAction<LobbyInvites>) => {
     //   state.invitedFriends = state.invitedFriends.filter(
     //     (invite) => invite.id !== payload.user.id

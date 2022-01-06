@@ -118,8 +118,8 @@ export default function Header(): JSX.Element {
                 <hr className={hrV} />
               </li>
               <li className={headerLi}>
-                <Link href={'/lobbies'}>
-                  <a>Lobby</a>
+                <Link href={'/game/lobbies'}>
+                  <a>Game</a>
                 </Link>
               </li>
               <li className={headerLi}>

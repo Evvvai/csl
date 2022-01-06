@@ -19,20 +19,15 @@ export const clientHandle = async (ql, variables) => {
   let data: any = null
   let errors: any = null
 
-  // console.log('param', variables)
-
   try {
     data = await client.request(ql, variables)
   } catch (error) {
-    // console.log('error', error)
-
     errors = error
   }
 
-  return {
-    data,
-    errors: errors?.response?.errors[0].extensions.response || null,
-  }
+  if (data && !errors) data = data[Object.keys(data)[0]]
+
+  return [data, errors?.response?.errors[0].extensions.response || null]
 }
 
 export default client

@@ -9,6 +9,10 @@ import { useEffect } from 'react'
 // Layouts
 import MainLayout from 'components/layouts/Main.layout'
 
+/* May be reworekd... */
+import FriendsPath from 'components/layouts/FriendsPath.layout'
+import GamePath from 'components/layouts/GamePath.layout'
+
 // Components
 import Header from '../components/header/Header.component'
 import Footer from 'components/footer/Footer.component'
@@ -24,8 +28,6 @@ import { AUTH } from 'types/graphql/mutation'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
-import { setUserSetting } from 'stores/user.slice'
-import { appLoaded } from 'stores/app.slice'
 
 /////////////////////////////////////////////////////////////////////////////////////
 function MyApp({ Component, pageProps }: AppProps) {
@@ -38,6 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     dayjs.extend(relativeTime)
     dayjs.extend(duration)
     dayjs.locale('ru')
+    dayjs.locale('en')
   }, [])
 
   if (!isLoad) return <div>Ladno</div>
@@ -59,7 +62,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         {/* <NotificationList /> */}
         <Header />
         <MainLayout>
-          <Component {...pageProps} />
+          <FriendsPath>
+            <GamePath>
+              <Component {...pageProps} />
+            </GamePath>
+          </FriendsPath>
         </MainLayout>
         <Footer />
       </ThemeProvider>

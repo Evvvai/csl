@@ -22,12 +22,12 @@ export const useFriend = () => {
     useTypesSelector((state) => state.friend)
 
   const updateFriends = useCallback(async (): Promise<Friend[]> => {
-    const { data, errors } = await clientHandle(USER_NEW_FRIENDS, {})
+    const [data, errors] = await clientHandle(USER_NEW_FRIENDS, {})
 
     // Must be create sync callback
-    if (data && !errors) updatedFriends(data.userNewFriends)
+    if (data && !errors) updatedFriends(data)
 
-    return data.userNewFriends
+    return data
   }, [])
 
   const sentInvite = useCallback(async (user: User, room: Room) => {

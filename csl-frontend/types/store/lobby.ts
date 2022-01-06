@@ -10,13 +10,19 @@ export interface Lobby {
   id: number
   name: string
   captainId: number
+  firstTeamName: string
+  secondTeamName: string
   maxPlayers: 2 | 3 | 5
-  isPrivate: boolean
-  isShare: boolean
+  isPublic: boolean
   status: StatusLobby
   createdAt: Date
   udaptedAt: Date
   users: User[]
+}
+
+export interface LobbyTeams extends Lobby {
+  ctTeam: User[]
+  tTeam: User[]
 }
 
 export const statusLobby = ['pending', 'searching', 'confirmation'] as const

@@ -102,7 +102,8 @@ const roomSocket = (type: string, socket: any, payload: any, dispatch: any) => {
     }
 
     case 'deletedRoom': {
-      socket.emit('deleteRoom', payload)
+      // Idk were better here or in hook
+      // socket.emit('deleteRoom', payload)
       break
     }
 

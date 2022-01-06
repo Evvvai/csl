@@ -1,6 +1,5 @@
-import { ConnectedLobby } from 'src/connected-lobby/entities/connected-lobby.entity';
-import { LobbyUser } from 'src/lobby-users/entities/lobby-user.entity';
 import { MaxPlayers } from 'src/room/entities/max-players.enum';
+import { UserI } from 'src/users/entities/user.interface';
 import { StatusLobby } from './status-lobby';
 
 export interface LobbyI {
@@ -18,6 +17,7 @@ export interface LobbyI {
   /////////////////////////////////////////////////////////////////////////////////
   // Relations
 
+  users?: UserI[];
   // connectedLobbies: ConnectedLobby[];
   // lobbiesUsers: LobbyUser[];
 }

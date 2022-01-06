@@ -44,6 +44,19 @@ type Lobby {
   status: String!
   createdAt: DateTime!
   udaptedAt: DateTime!
+  users: [User!]!
+  usersTeam(input: UsersTeamInput): [User!]
+}
+
+input UsersTeamInput {
+  """Team in lobby"""
+  name: Teams!
+}
+
+enum Teams {
+  CT
+  T
+  SPEC
 }
 
 type UserToken {
@@ -57,6 +70,8 @@ type Query {
   friends(userId: Float!): [User!]!
   activeRoom: Room!
   room(id: Float!): Room!
+  lobbies(limit: Float, page: Float): [Lobby!]!
+  activeLobby: Lobby!
 }
 
 type Mutation {
@@ -70,7 +85,7 @@ type Mutation {
 }
 
 input CreateRoomInput {
-  """Max Players on lobby"""
+  """Max Players on room"""
   maxPlayers: MaxPlayers!
 }
 

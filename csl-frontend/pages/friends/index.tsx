@@ -8,7 +8,6 @@ const {
   cFriendsContent,
   title,
   item,
-  various,
   list,
   itemFriend,
   avatar,
@@ -23,10 +22,11 @@ const {
 import { RiDeleteBin5Fill } from 'react-icons/ri'
 
 // Components
+import MyInput from '../../components/UI/MyInput/MyInput.component'
 
 // Custom hook
-import { useFriend } from '../../hooks/store/friend/useFriend'
-import MyInput from '../../components/UI/MyInput/MyInput.component'
+import { useFriend } from '../../hooks/store/friend'
+import { useFriendFiltered } from '../../hooks/store/friend'
 
 // Utils
 import { useRouter } from 'next/dist/client/router'
@@ -36,11 +36,16 @@ interface Props {}
 
 /////////////////////////////////////////////////////////////////////////////////////
 const Friends = (props: Props) => {
+  const { termFriend, filteredFriendsIds, filteringFriends } =
+    useFriendFiltered()
   const { friendsList } = useFriend()
   const router = useRouter()
 
-  const [section, setSection] = useState<number>(0)
-  const [term, setTerm] = useState<string>('')
+  const [term, setTerm] = useState<string>(termFriend)
+  // Sync
+  useEffect(() => {
+    setTerm(termFriend)
+  }, [termFriend])
 
   return (
     <Fragment>
@@ -55,16 +60,6 @@ const Friends = (props: Props) => {
         <meta name="robots" content="INDEX,FOLLOW" />
       </Head>
       <section className={cFriends}>
-        <header className={title}>
-          <h1>Friends</h1>
-          {/* <hr /> */}
-        </header>
-        <div className={various}>
-          <span style={{ transform: 'translateX(' + 100 * section + 'px)' }} />
-          <button onClick={(e) => setSection(0)}>My friends</button>
-          <button onClick={(e) => setSection(1)}>Requests</button>
-          <button onClick={(e) => setSection(2)}>. . . . .</button>
-        </div>
         <div className={cFriendsContent}>
           <div className={search}>
             <MyInput
@@ -72,14 +67,22 @@ const Friends = (props: Props) => {
               model={{ value: term, setValue: setTerm }}
               type={'text'}
               name={'search'}
+              callback={filteringFriends}
+              debounce={400}
             />
           </div>
           <div className={list}>
-            {[...friendsList, ...hardcodedata]
+            {[
+              ...friendsList.filter((x) =>
+                filteredFriendsIds.find((y) => y === x.id)
+              ),
+              ...hardcodedata,
+            ]
               .sort((x, y) => Number(y.online) - Number(x.online))
-              .map((friend) => {
+              .map((friend, key) => {
                 return (
                   <div
+                    key={friend.id.toString() + key}
                     onClick={(e) => router.push('/' + friend.steamId64)}
                     className={item}
                   >

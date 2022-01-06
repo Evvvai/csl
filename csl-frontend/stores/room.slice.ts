@@ -36,9 +36,6 @@ const roomSlice = createSlice({
     changeSearchStatus: (state, { payload }: PayloadAction<boolean>) => {
       // state.currentRoom = payload
     },
-    syncRoom: (state, { payload }: PayloadAction<Room>) => {
-      state.currentRoom = payload
-    },
     addUser: (state, { payload }: PayloadAction<User>) => {
       state.currentRoom.users.push(payload)
     },
@@ -46,6 +43,9 @@ const roomSlice = createSlice({
       state.currentRoom.users = state.currentRoom.users.filter(
         (user) => user.id !== payload.id
       )
+    },
+    syncRoom: (state, { payload }: PayloadAction<Room>) => {
+      state.currentRoom = payload
     },
   },
   extraReducers: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 // Styles
 import styles from './FriendAside.module.scss'
@@ -37,8 +37,7 @@ import FriendSync from './friend-sync/FriendSync.component'
 
 // Custom hooks
 import { useFriend } from 'hooks/store/friend'
-import Modal from 'components/UI/Modal/Modal.component'
-import { Portal } from 'utils/portal'
+import { useFriendFiltered } from 'hooks/store/friend'
 
 // Utils
 import cn from 'classnames'
@@ -46,6 +45,8 @@ import { useRouter } from 'next/dist/client/router'
 import { useRoom } from 'hooks/store/room'
 import { User } from '@store'
 import dayjs from 'dayjs'
+import Modal from 'components/UI/Modal/Modal.component'
+import { Portal } from 'utils/portal'
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 export default function FriendAside(): JSX.Element {
@@ -60,9 +61,17 @@ export default function FriendAside(): JSX.Element {
     invitedFriends,
     removeInvite,
   } = useFriend()
+  const { termFriend, filteredFriendsIds } = useFriendFiltered()
+
   const { currentRoom } = useRoom()
 
   const [isFriendSync, setIsFriendSync] = useState<boolean>(false)
+  const [term, setTerm] = useState<string>(termFriend)
+
+  // Sync
+  useEffect(() => {
+    setTerm(termFriend)
+  }, [termFriend])
 
   const router = useRouter()
   const handleClickClose = () => closeFriend()
@@ -78,7 +87,7 @@ export default function FriendAside(): JSX.Element {
   const handleClickRejectInvite = (user: User) => () => {
     removeInvite(user, currentRoom)
   }
-
+  termFriend
   return (
     <div className={cn(friend, { [Open]: isFriendOpen })}>
       <div className={content}>
@@ -88,7 +97,11 @@ export default function FriendAside(): JSX.Element {
         <hr className={hrH} />
         <div className={search}>
           <MdOutlineManageSearch className={cn(searchIcon)} />
-          <input className={searchInput} />
+          <input
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            className={searchInput}
+          />
           <div
             className={searchIcon}
             onClick={(e) => {
@@ -130,10 +143,14 @@ export default function FriendAside(): JSX.Element {
         <ul className={list}>
           {!isFriendLoad ? (
             <div>Loading...</div>
-          ) : friendsList.length === 0 ? (
+          ) : filteredFriendsIds.length === 0 ? (
             <div>{/* <img src={NOT_FOUND} /> */}</div>
           ) : (
-            [...friendsList]
+            [
+              ...friendsList.filter((x) =>
+                filteredFriendsIds.find((y) => y === x.id)
+              ),
+            ]
               .sort((x, y) => Number(y.online) - Number(x.online))
               .map((val) => {
                 return (

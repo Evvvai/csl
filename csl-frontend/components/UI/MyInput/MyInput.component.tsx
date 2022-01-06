@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import style from './MyInput.module.scss'
 
 // Style
@@ -18,6 +18,8 @@ interface Props {
   name: nameInput
   autoComplete?: autoCompleteInput
   isError?: boolean
+  callback?: any
+  debounce?: number
 }
 
 type typeInput = 'password' | 'text' | 'email'
@@ -33,6 +35,13 @@ type autoCompleteInput = 'username' | 'new-password' | 'password' | 'email'
 // Component
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function MyInput(props: Props): JSX.Element {
+  /**
+   * Need implement debounce
+   */
+  useEffect(() => {
+    props.callback(props.model.value)
+  }, [props.model.value])
+
   return (
     <div className={formGroup}>
       <label className={formGroup__label}>{props.label}</label>

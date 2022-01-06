@@ -5,7 +5,10 @@ export interface FriendState {
   isFriendOpen: boolean
 
   friends: Friend[]
+  filteredFriendsIds: number[]
   invitedFriends: User[]
+
+  term: string
 }
 
 export interface Friend extends User {

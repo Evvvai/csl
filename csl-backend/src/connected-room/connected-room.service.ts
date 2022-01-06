@@ -29,4 +29,8 @@ export class ConnectedRoomService {
       socketId: In(socketIds),
     });
   }
+
+  async deleteAllConnection() {
+    await this.connectedRoomRepository.createQueryBuilder().delete().execute();
+  }
 }

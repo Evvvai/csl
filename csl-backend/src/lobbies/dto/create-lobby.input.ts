@@ -7,7 +7,7 @@ registerEnumType(MaxPlayers, {
 });
 
 @InputType()
-export class CreateLobbyInput implements LobbyI {
+export class CreateLobbyInput {
   @Field(() => MaxPlayers, { description: 'Max Players on lobby' })
   maxPlayers: MaxPlayers;
 }
