@@ -34,7 +34,8 @@ import { uploadBytesResumable, ref, getDownloadURL } from '@firebase/storage'
 
 // Interface
 interface Props {
-  setOpen: any
+  close?: any
+  isOpen?: any
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +88,7 @@ export default function DashboardEdit(props: Props): JSX.Element {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          props.setOpen(false)
+          props.close()
           changeDashboard(downloadURL)
         })
       }

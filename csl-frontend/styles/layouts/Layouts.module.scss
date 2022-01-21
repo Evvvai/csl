@@ -131,6 +131,7 @@
       width: 50%;
       border-top: 1px solid var(--color-border);
       margin: 0 auto;
+      display: flex;
 
       span {
         position: absolute;
@@ -143,15 +144,25 @@
         transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
       }
 
-      button {
+      &Item {
         font-size: 1rem;
         padding: 0 10px;
         height: 35px;
         width: 100px;
         cursor: pointer;
         color: var(--color-text);
+      }
 
-        .Active {
+      &Add {
+        margin-left: auto;
+        width: 25px;
+        padding: 2px;
+        cursor: pointer;
+
+        svg {
+          fill: var(--color-text);
+          height: 100%;
+          width: 100%;
         }
       }
 
@@ -194,6 +205,7 @@
       width: 50%;
       border-top: 1px solid var(--color-border);
       margin: 0 auto;
+      display: flex;
 
       span {
         position: absolute;
@@ -206,16 +218,18 @@
         transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
       }
 
-      button {
+      &Item {
         font-size: 1rem;
         padding: 0 10px;
         height: 35px;
         width: 100px;
         cursor: pointer;
         color: var(--color-text);
+      }
 
-        .Active {
-        }
+      &Add {
+        margin-left: auto;
+        width: 25px;
       }
 
       @include mobile {

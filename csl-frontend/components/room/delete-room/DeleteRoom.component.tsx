@@ -25,12 +25,14 @@ const {
 // Interface
 interface Props {
   handleClickLeave: any
-  setOpen: any
+
+  close?: any
+  isOpen?: any
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function DeleteRoom(props: Props): JSX.Element {
-  const handleClickClose = () => props.setOpen(false)
+  const handleClickClose = () => props.close()
 
   return (
     <form onClick={(e) => e.stopPropagation()} className={formContent}>

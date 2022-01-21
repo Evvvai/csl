@@ -38,7 +38,7 @@ const lobbySlice = createSlice({
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload.lobby,
       }
     },
   },

@@ -117,14 +117,11 @@ export default function Room(props: Props): JSX.Element {
           <LeaveIcon onClick={handleClickLeave} className={settingItem} />
           <Portal selector="#modal">
             <Modal isOpen={isDeleteOpen} setOpen={setIsDeleteOpen}>
-              <DeleteRoom
-                setOpen={setIsDeleteOpen}
-                handleClickLeave={(e) => deleteRoom(currentRoom)}
-              />
+              <DeleteRoom handleClickLeave={(e) => deleteRoom(currentRoom)} />
             </Modal>
           </Portal>
         </div>
-        <Setting setOpen={setIsSettings} isOpen={isSettings} />{' '}
+        <Setting setOpen={setIsSettings} isOpen={isSettings} />
         {/* Need rework */}
         <div className={start}>
           {isSearch ? (

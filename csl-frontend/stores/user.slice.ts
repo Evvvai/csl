@@ -34,7 +34,7 @@ const userSlice = createSlice({
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload.userInfo,
+        ...action.payload.user,
       }
     },
   },

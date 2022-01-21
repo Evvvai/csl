@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+redis-data
+postgres-data
 
 
 # testing

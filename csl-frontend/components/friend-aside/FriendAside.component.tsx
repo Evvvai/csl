@@ -87,7 +87,7 @@ export default function FriendAside(): JSX.Element {
   const handleClickRejectInvite = (user: User) => () => {
     removeInvite(user, currentRoom)
   }
-  termFriend
+
   return (
     <div className={cn(friend, { [Open]: isFriendOpen })}>
       <div className={content}>
@@ -130,11 +130,7 @@ export default function FriendAside(): JSX.Element {
               <AiOutlineCloudSync />
               <Portal selector="#modal">
                 <Modal isOpen={isFriendSync} setOpen={setIsFriendSync}>
-                  <FriendSync
-                    isOpen={isFriendSync}
-                    setOpen={setIsFriendSync}
-                    updateFriends={updateFriends}
-                  />
+                  <FriendSync updateFriends={updateFriends} />
                 </Modal>
               </Portal>
             </div>

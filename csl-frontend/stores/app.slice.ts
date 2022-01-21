@@ -29,7 +29,7 @@ const appSlice = createSlice({
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload.isLoad,
+        ...action.payload.app,
       }
     },
   },

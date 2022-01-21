@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  redis:
+    image: redis:latest
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - default
+    restart: always
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_DB}
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - default
+    restart: always
+volumes:
+  postgres-data:
+  redis-data:

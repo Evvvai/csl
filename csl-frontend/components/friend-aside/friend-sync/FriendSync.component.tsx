@@ -36,17 +36,16 @@ import { IoIosClose } from 'react-icons/io'
 
 // Interface
 interface Props {
-  isOpen: any
-  setOpen: any
   updateFriends: any
+
+  close?: any
+  isOpen?: any
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function FriendSync(props: Props): JSX.Element {
   const [isLoad, setIsLoad] = useState<boolean>(false)
   const [newFriends, setNewFriends] = useState<Friend[]>([])
-
-  const handleClickClose = () => props.setOpen(false)
 
   useEffect(() => {
     if (!props.isOpen) return
@@ -125,7 +124,7 @@ export default function FriendSync(props: Props): JSX.Element {
           )}
         </div>
       </section>
-      <div className={moduleClose} onClick={handleClickClose}>
+      <div className={moduleClose} onClick={props.close}>
         <IoIosClose />
       </div>
     </form>

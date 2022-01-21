@@ -1,4 +1,4 @@
-/* FriendSync */
+/* CreateGame */
 /* ////////////////////////////////////////////////////// */
 
 $width-base: 400px;
@@ -28,15 +28,15 @@ $width-base: 400px;
   position: relative;
   display: flex;
   width: 100%;
-  height: 56px;
-  padding: 10px;
+  min-height: 56px;
+  padding: 10px 35px;
   align-items: center;
   justify-content: center;
 
   &Title {
     position: absolute;
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--color-text-invert);
   }
 
@@ -48,14 +48,6 @@ $width-base: 400px;
   }
 }
 
-.moduleInfo {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  color: var(--color-sub-text-invert);
-  font-size: 0.9rem;
-}
-
 .moduleSubmit {
   border-radius: 25px;
   user-select: none;
@@ -63,49 +55,24 @@ $width-base: 400px;
   flex-direction: column;
 
   padding: 16px;
-  gap: 15px;
 
-  &Agree {
-    width: 100%;
-    height: 40px;
-    border-radius: 45px;
+  width: 100%;
+  height: 40px;
+  border-radius: 45px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    background-color: var(--color-submit-bg);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 1rem;
+  background-color: var(--color-submit-bg);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
 
-    &:hover {
-      background-color: var(--color-submit-bg-hover);
-    }
-    transition: all 0.2s ease-in;
+  &:hover {
+    background-color: var(--color-submit-bg-hover);
   }
-
-  &Close {
-    cursor: pointer;
-    width: 100%;
-    height: 40px;
-    border-radius: 45px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--color-submit-bg-close);
-    color: var(--color-sub-text-invert);
-    font-weight: 500;
-    font-size: 1rem;
-
-    &:hover {
-      background-color: var(--color-background-modal-content);
-      color: var(--color-sub-text);
-    }
-    transition: all 0.2s ease-in;
-  }
+  transition: all 0.2s ease-in;
 }
 
 .hr {
@@ -118,29 +85,12 @@ $width-base: 400px;
 }
 
 .moduleContent {
-  h1 {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--color-text-invert);
-  }
-}
-.moduleList {
-  width: 100%;
-  height: auto;
-
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 15px;
 
-  > :hover {
-    background-color: var(--color-background-modal-content);
-    border-right: 2px solid var(--color-highlight);
-    border-left: 2px solid var(--color-highlight);
-
-    .itemInvite {
-      opacity: 1;
-    }
-  }
+  padding: 25px;
 }
 
 .moduleItem {

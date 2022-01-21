@@ -1,9 +1,17 @@
 import { io, Socket } from 'socket.io-client'
 import getToken from 'utils/getToken'
 
+interface SocketI {
+  socket: Socket | null | undefined
+  connect: () => void
+  disconnect: () => void
+  emit: (eventName: string, data: any) => void
+  on: (eventName: string, func: () => void) => void
+}
+
 // A little API for the stateful socket connection, just to keep it out of the global
 // namespace and away from the socket middleware
-export default class SocketClient {
+export default class SocketClient implements SocketI {
   socket: Socket | null | undefined
 
   connect() {

@@ -47,7 +47,7 @@ const notificationSlice = createSlice({
     [HYDRATE]: (state, action) => {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload.notification,
       }
     },
   },

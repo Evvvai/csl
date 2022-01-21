@@ -5,8 +5,9 @@ import { useTypesSelector } from '../useTypesSelector'
 import { useCallback } from 'react'
 import { clientHandle } from 'utils/graphql'
 import { CREATE_LOBBY } from 'types/graphql/mutation'
-import { Lobby, MaxPlayers } from '@store'
+import { Lobby } from '@store'
 import { socket } from 'stores'
+import { GameSettings } from '@types'
 
 // Lobby Hook Selector / Dispatch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,11 +17,11 @@ export const useLobby = () => {
     bindActionCreators(ActionCreators.actions, dispatch)
   const { isLoading, currentLobby } = useTypesSelector((state) => state.lobby)
 
-  const createLobby = useCallback(async (maxPlayers: MaxPlayers) => {
+  const createLobby = useCallback(async (options: GameSettings) => {
     setLoading()
 
     const [data, errors] = await clientHandle(CREATE_LOBBY, {
-      maxPlayers: maxPlayers,
+      maxPlayers: options.maxPlayers,
     })
 
     createdLobby(data)

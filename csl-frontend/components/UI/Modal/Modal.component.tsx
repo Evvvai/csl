@@ -1,4 +1,12 @@
-import { FC, useCallback, useRef, useState } from 'react'
+import {
+  Children,
+  cloneElement,
+  FC,
+  isValidElement,
+  useCallback,
+  useRef,
+  useState,
+} from 'react'
 import style from './Modal.module.scss'
 
 // Style
@@ -37,6 +45,16 @@ export default function Modal(props: Props): JSX.Element {
     }
   }, [])
 
+  const childrenWithProps = Children.map(props.children, (child) => {
+    if (isValidElement(child)) {
+      return cloneElement<any>(child, {
+        close: handleClickClose,
+        isOpen: props.isOpen,
+      })
+    }
+    return child
+  })
+
   return (
     <div
       onMouseDown={handleClickClose}
@@ -52,7 +70,7 @@ export default function Modal(props: Props): JSX.Element {
           onMouseDown={(e) => e.stopPropagation()}
           className={modal__content}
         >
-          {props.children}
+          {childrenWithProps}
         </div>
       </div>
     </div>

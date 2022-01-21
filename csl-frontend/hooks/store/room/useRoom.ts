@@ -7,6 +7,7 @@ import { clientHandle } from 'utils/graphql'
 import { CREATE_ROOM, DELETE_ROOM } from 'types/graphql/mutation'
 import { MaxPlayers, Room } from '@store'
 import { socket } from 'stores'
+import { GameSettings } from '@types'
 
 // Room Hook Selector / Dispatch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,11 +17,11 @@ export const useRoom = () => {
     bindActionCreators(ActionCreators.actions, dispatch)
   const { isLoading, currentRoom } = useTypesSelector((state) => state.room)
 
-  const createRoom = useCallback(async (maxPlayers: MaxPlayers) => {
+  const createRoom = useCallback(async (options: GameSettings) => {
     setLoading()
 
     const [data, errors] = await clientHandle(CREATE_ROOM, {
-      maxPlayers: maxPlayers,
+      maxPlayers: options.maxPlayers,
     })
 
     createdRoom(data)

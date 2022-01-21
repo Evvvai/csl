@@ -42,7 +42,8 @@ const Friends = (props: Props) => {
   const router = useRouter()
 
   const [term, setTerm] = useState<string>(termFriend)
-  // Sync
+
+  // Sync term
   useEffect(() => {
     setTerm(termFriend)
   }, [termFriend])
@@ -68,7 +69,7 @@ const Friends = (props: Props) => {
               type={'text'}
               name={'search'}
               callback={filteringFriends}
-              debounce={400}
+              debounce={350}
             />
           </div>
           <div className={list}>

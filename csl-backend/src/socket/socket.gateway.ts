@@ -1,8 +1,7 @@
 /**
  *
  *
- * Need separate postgres from redis
- * and put it into a separate service linked via rabbitmq
+ * Socket functions Postgers is an alternative it may not be used
  *
  *
  */
@@ -192,6 +191,7 @@ export class SocketGateway
   }
 
   async handleDisconnect(socket: Socket) {
+    if (!socket.data?.user?.id) return;
     // Remove connection
     // *Postgres
     // await this.connectedUserService.deleteBySocketId(socket.id);

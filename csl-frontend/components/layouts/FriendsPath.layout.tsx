@@ -36,16 +36,31 @@ const FriendsPath: FC = ({ children }) => {
         </div>
         <div className={styles.layoutsFriendsVarious}>
           <span style={{ transform: 'translateX(' + 100 * section + 'px)' }} />
-          <button onClick={(e) => router.push('/friends/')}>My friends</button>
-          <button onClick={(e) => router.push('/friends/requests')}>
+          <button
+            className={styles.layoutsFriendsVariousItem}
+            onClick={(e) => router.push('/friends/')}
+          >
+            My friends
+          </button>
+          <button
+            className={styles.layoutsFriendsVariousItem}
+            onClick={(e) => router.push('/friends/requests')}
+          >
             Requests
           </button>
           <button
+            className={styles.layoutsFriendsVariousItem}
             onClick={(e) => {
               // router.push('/friends/none')
             }}
           >
             . . . . .
+          </button>
+          <button
+            onClick={(e) => console.log('a')}
+            className={styles.layoutsFriendsVariousAdd}
+          >
+            +
           </button>
         </div>
         {children}

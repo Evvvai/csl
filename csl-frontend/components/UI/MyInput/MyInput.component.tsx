@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import style from './MyInput.module.scss'
 
 // Style
@@ -6,6 +6,7 @@ const { formGroup, formGroup__input, formGroup__label, Error } = style
 
 // Utils
 import cn from 'classnames'
+import debounce from '../../../utils/browser/debounce'
 
 // Interface
 interface Props {
@@ -18,8 +19,9 @@ interface Props {
   name: nameInput
   autoComplete?: autoCompleteInput
   isError?: boolean
-  callback?: any
+  callback?: (term: string) => void
   debounce?: number
+  className?: any
 }
 
 type typeInput = 'password' | 'text' | 'email'
@@ -35,12 +37,22 @@ type autoCompleteInput = 'username' | 'new-password' | 'password' | 'email'
 // Component
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function MyInput(props: Props): JSX.Element {
-  /**
-   * Need implement debounce
-   */
-  useEffect(() => {
-    props.callback(props.model.value)
-  }, [props.model.value])
+  const debounceCallback = props.callback || (() => {})
+  const debounceTime = props.debounce || 100
+
+  const dFuncCallback = debounce<typeof debounceCallback>(
+    debounceCallback,
+    debounceTime
+  )
+
+  const dFunc = useCallback((term: string) => {
+    dFuncCallback(term)
+  }, [])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    props.model.setValue(e.target.value)
+    dFunc(e.target.value)
+  }
 
   return (
     <div className={formGroup}>
@@ -48,7 +60,7 @@ export default function MyInput(props: Props): JSX.Element {
       <input
         className={cn(formGroup__input, { [Error]: props?.isError })}
         value={props.model.value}
-        onChange={(e) => props.model.setValue(e.target.value)}
+        onChange={handleChange}
         type={props.type}
         name={props.name}
         autoComplete={props?.autoComplete}

@@ -60,7 +60,9 @@ const CreateGame: FC<Props> = (props) => {
       router.push(process.env.NEXT_BACKEND_URL + '/auth/steam')
       return
     }
-    isSelectType === 'room' ? createRoom(maxPlayers) : createLobby(maxPlayers)
+    isSelectType === 'room'
+      ? createRoom({ maxPlayers })
+      : createLobby({ maxPlayers })
     setGenerateStage(0)
   }
 

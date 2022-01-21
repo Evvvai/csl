@@ -69,7 +69,7 @@ const Profile: NextPage<Props> = ({ userData }) => {
               <Icon asset={'Edit'} />
               <Portal selector="#modal">
                 <Modal isOpen={isDashboardEdit} setOpen={setIsDashboardEdit}>
-                  <DashboardEditModal setOpen={setIsDashboardEdit} />
+                  <DashboardEditModal />
                 </Modal>
               </Portal>
             </div>
@@ -98,7 +98,7 @@ const Profile: NextPage<Props> = ({ userData }) => {
                 <Icon asset={'Edit'} />
                 <Portal selector="#modal">
                   <Modal isOpen={isAvatarEdit} setOpen={setIsAvatarEdit}>
-                    <AvatarEditModal setOpen={setIsAvatarEdit} />
+                    <AvatarEditModal />
                   </Modal>
                 </Portal>
               </div>
