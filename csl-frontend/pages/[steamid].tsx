@@ -1,4 +1,4 @@
-import client, { clientHandle } from 'utils/graphql'
+import client, { clientHandle, serverHandle } from 'utils/graphql'
 import { USER } from 'types/graphql/quary'
 import { NextPage } from 'next'
 
@@ -40,7 +40,7 @@ interface Props {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-const Profile: NextPage<Props> = ({ userData }) => {
+const Profile = ({ userData }: Props) => {
   const { userInfo } = useUser()
 
   const [isAvatarEdit, setIsAvatarEdit] = useState<boolean>(false)
@@ -115,36 +115,20 @@ const Profile: NextPage<Props> = ({ userData }) => {
   )
 }
 
-export const getServerSideProps = async (ctx) => {
+Profile.getInitialProps = async ({ query, store, res }) => {
   try {
-    const [data, errors] = await clientHandle(USER, {
-      steamid64: ctx.params.steamid,
+    const [userData, userDataErrors] = await serverHandle(res, USER, {
+      steamid64: query.steamid,
     })
 
-    if (!data || errors) {
-      return {
-        props: {},
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      }
-    } else {
-      return {
-        props: {
-          userData: data,
-        },
-      }
-    }
-  } catch (err) {
-    // console.log('err', err)
+    if (!userData) throw new Error()
+
     return {
-      props: {},
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+      userData,
     }
+  } catch (e) {
+    res.writeHead(307, { Location: '/404' })
+    res.end()
   }
 }
 

@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import type { ReactElement } from 'react'
 import Head from 'next/head'
 
 // Styles
@@ -8,6 +9,7 @@ import styles from '../../../styles/friends/requests/FriendsRequests.module.scss
 // import {} from 'react-icons/'
 
 // Components
+import FriendsPath from '../../../components/layouts/FriendsPath.layout'
 
 // Custom hook
 
@@ -38,10 +40,8 @@ const Friends = (props: Props) => {
 
 export default Friends
 
-// export async function getStaticProps(context: any): Promise<GetStaticPropsResult<Props>> {
+Friends.getInitialProps = async ({ query, store, res }) => {}
 
-//   return {
-//     props: {
-//     },
-//   };
-// }
+Friends.getLayout = function getLayout(page: ReactElement) {
+  return <FriendsPath>{page}</FriendsPath>
+}

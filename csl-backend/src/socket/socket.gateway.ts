@@ -117,6 +117,9 @@ export class SocketGateway
           socket.id,
         );
         socket.join('room' + activeRoom.roomId);
+        this.server.to(socket.id).emit('room/joinRoom', activeRoom);
+
+        console.log('a', activeRoom);
       } else {
         const activeLobby = await this.lobbyUsersService.getLobbyByUser(
           socket.data.user,
@@ -130,8 +133,10 @@ export class SocketGateway
             socket.data.user.id,
             socket.id,
           );
-
           socket.join('lobby' + activeLobby.lobbyId);
+          this.server.to(socket.id).emit('lobby/joinLobby', activeLobby);
+
+          console.log('b', activeRoom);
         }
       }
 

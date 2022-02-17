@@ -60,4 +60,8 @@ export class LobbiesService {
       .where('id = :id', { id: id })
       .execute();
   }
+
+  async deleteAllLobbies() {
+    await this.lobbyRepository.createQueryBuilder().delete().execute();
+  }
 }

@@ -1,28 +1,16 @@
 import { Fragment, useEffect, useState } from 'react'
+import type { ReactElement } from 'react'
 import Head from 'next/head'
 
 // Styles
 import styles from '../../styles/friends/Friends.module.scss'
-const {
-  cFriends,
-  cFriendsContent,
-  title,
-  item,
-  list,
-  itemFriend,
-  avatar,
-  info,
-  infoName,
-  infoOnline,
-  options,
-  search,
-} = styles
 
 // Icons
 import { RiDeleteBin5Fill } from 'react-icons/ri'
 
 // Components
 import MyInput from '../../components/UI/MyInput/MyInput.component'
+import FriendsPath from '../../components/layouts/FriendsPath.layout'
 
 // Custom hook
 import { useFriend } from '../../hooks/store/friend'
@@ -60,9 +48,9 @@ const Friends = (props: Props) => {
         <meta name="og:title" content="cSurfLeague" />
         <meta name="robots" content="INDEX,FOLLOW" />
       </Head>
-      <section className={cFriends}>
-        <div className={cFriendsContent}>
-          <div className={search}>
+      <section className={styles.friends}>
+        <div className={styles.friendsContent}>
+          <div className={styles.search}>
             <MyInput
               label={'write term'}
               model={{ value: term, setValue: setTerm }}
@@ -72,7 +60,7 @@ const Friends = (props: Props) => {
               debounce={350}
             />
           </div>
-          <div className={list}>
+          <div className={styles.list}>
             {[
               ...friendsList.filter((x) =>
                 filteredFriendsIds.find((y) => y === x.id)
@@ -85,11 +73,11 @@ const Friends = (props: Props) => {
                   <div
                     key={friend.id.toString() + key}
                     onClick={(e) => router.push('/' + friend.steamId64)}
-                    className={item}
+                    className={styles.item}
                   >
-                    <div className={itemFriend}>
+                    <div className={styles.itemFriend}>
                       <img
-                        className={avatar}
+                        className={styles.avatar}
                         src={
                           friend.avatarCustom !== null
                             ? friend.avatarCustom
@@ -98,9 +86,9 @@ const Friends = (props: Props) => {
                             : process.env.AVATAR_NULL
                         }
                       />
-                      <div className={info}>
-                        <div className={infoName}>{friend.username}</div>
-                        <div className={infoOnline}>
+                      <div className={styles.info}>
+                        <div className={styles.infoName}>{friend.username}</div>
+                        <div className={styles.infoOnline}>
                           {friend.online ? (
                             <span>. . .</span>
                           ) : (
@@ -108,7 +96,7 @@ const Friends = (props: Props) => {
                           )}
                         </div>
                       </div>
-                      <div className={options}>
+                      <div className={styles.options}>
                         <RiDeleteBin5Fill />
                       </div>
                     </div>
@@ -124,13 +112,11 @@ const Friends = (props: Props) => {
 
 export default Friends
 
-// export async function getStaticProps(context: any): Promise<GetStaticPropsResult<Props>> {
+Friends.getInitialProps = async ({ query, store, res }) => {}
 
-//   return {
-//     props: {
-//     },
-//   };
-// }
+Friends.getLayout = function getLayout(page: ReactElement) {
+  return <FriendsPath>{page}</FriendsPath>
+}
 
 const hardcodedata = [
   {

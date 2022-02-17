@@ -61,7 +61,6 @@ export class AuthService {
       if (!(await this.steamAPIAuthService.canUserRegister(profile.id))) {
         return null;
       }
-      console.log('aaa');
 
       const userProfile = await this.steamAPIAuthService.getUserInfo(
         profile.id,

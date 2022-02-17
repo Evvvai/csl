@@ -39,8 +39,8 @@ export class LoggingInterceptor implements NestInterceptor {
       tap(() => {
         const ms = Date.now() - now;
 
-        // if (NODE_ENV !== 'production')
-        // console.log('Request ' + ms + 'ms | ' + body.length);
+        if (NODE_ENV !== 'production')
+          console.log('Request ' + ms + 'ms | ' + body.length);
         // if (NODE_ENV !== 'production') console.table([ip, route, ms]);
       }),
     );

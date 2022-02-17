@@ -5,7 +5,7 @@ import { RootState } from 'stores/rootReducer'
 import SocketsActions from './combineSocketsActions'
 import SocketsOn from './combineSocketsOn'
 
-const INIT_KEY = 'user/setUserSetting'
+const INIT_KEY = 'socket/connect'
 
 // Interface
 interface SocketMiddlewareParams {

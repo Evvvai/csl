@@ -4,6 +4,7 @@ export interface LobbyState {
   isLoading: boolean
 
   currentLobby: Lobby
+  lobbies: LobbyTeams[]
 }
 
 export interface Lobby {

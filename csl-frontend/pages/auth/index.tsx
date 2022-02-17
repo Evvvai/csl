@@ -68,10 +68,4 @@ const Auth = (props: Props) => {
 
 export default Auth
 
-// export async function getStaticProps(context: any): Promise<GetStaticPropsResult<Props>> {
-
-//   return {
-//     props: {
-//     },
-//   };
-// }
+// Auth.getInitialProps = async ({ query, store, res }) => {}

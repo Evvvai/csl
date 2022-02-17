@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Lobby, LobbyState, User } from '@store'
+import { Lobby, LobbyState, LobbyTeams, User } from '@store'
 import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState: LobbyState = {
   isLoading: false,
 
   currentLobby: {} as Lobby,
+  lobbies: [],
 }
 
 // Slice
@@ -33,6 +34,10 @@ const lobbySlice = createSlice({
     syncLobby: (state, { payload }: PayloadAction<Lobby>) => {
       state.currentLobby = payload
     },
+    setLobbies: (state, { payload }: PayloadAction<LobbyTeams[]>) => {
+      state.isLoading = false
+      state.lobbies = payload
+    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
@@ -44,7 +49,7 @@ const lobbySlice = createSlice({
   },
 })
 
-// export const {  } = lobbySlice.actions
+export const { setLobbies } = lobbySlice.actions
 export default lobbySlice
 
 // Action

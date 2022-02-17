@@ -1,25 +1,23 @@
 #!/bin/sh
 
-sudo apt update
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install docker-ce
-sudo systemctl status docker
+#* Ubuntu / Debian
+#  Docker 
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install docker.io
+systemctl start docker
+systemctl enable docker
+
+#  Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
 
-# Docker Compose
-compose_release() {
-	  curl --silent "https://api.github.com/repos/docker/compose/releases/latest" |
-		    grep -Po '"tag_name": "\K.*?(?=")'
-	    }
+#* Arch
+sudo pacman -Syu docker          	# Install Docker
+sudo pacman -Syu docker-compose  	# Install docker-compose
 
-    if ! [ -x "$(command -v docker-compose)" ]; then
-	      curl -L https://github.com/docker/compose/releases/download/$(compose_release)/docker-compose-$(uname -s)-$(uname -m) \
-		        -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
-    fi
+sudo systemctl enable docker     	# Start Docker on system startup (optional)
+sudo systemctl start docker      	# Start Docker now
 
-
-chmod -R +x ./init-letsencrypt.sh && ./init-letsencrypt.sh
+sudo usermod -a -G docker $(whoami) # Give permission

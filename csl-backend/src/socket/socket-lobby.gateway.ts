@@ -54,6 +54,7 @@ export class SocketLobbyGateway implements OnModuleInit {
 
   async onModuleInit() {
     await this.connectedLobbyService.deleteAllConnection();
+    await this.lobbyService.deleteAllLobbies();
 
     Logger.debug(' > onModuleInitLobby');
   }

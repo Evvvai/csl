@@ -1,15 +1,15 @@
 import { Fragment, useEffect, useState } from 'react'
 import Head from 'next/head'
+import type { ReactElement } from 'react'
+
+// Styles
+// import styles from '../styles/home/Home.module.scss'
 
 // Components
 
 // Custom hook
 
 // Utils
-
-// Styles
-// import styles from '../styles/home/Home.module.scss'
-// const { home, homeContent } = styles
 
 interface Props {}
 
@@ -34,10 +34,8 @@ const Leaderboard = (props: Props) => {
 
 export default Leaderboard
 
-// export async function getStaticProps(context: any): Promise<GetStaticPropsResult<Props>> {
+Leaderboard.getInitialProps = async ({ query, store, res }) => {}
 
-//   return {
-//     props: {
-//     },
-//   };
-// }
+Leaderboard.getLayout = function getLayout(page: ReactElement) {
+  return <Fragment>{page}</Fragment>
+}

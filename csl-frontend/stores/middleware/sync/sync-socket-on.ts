@@ -15,6 +15,8 @@ export const syncSocketOn = (socket: any, dispatch: Dispatch<AnyAction>) => {
     })
   })
   socket.on('sync/joinRoom', (room: Room) => {
+    console.log('a')
+
     dispatch({
       type: 'room/syncRoom',
       payload: room,

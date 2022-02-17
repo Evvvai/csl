@@ -3,7 +3,7 @@ import getToken from 'utils/getToken'
 
 interface SocketI {
   socket: Socket | null | undefined
-  connect: () => void
+  connect: (token: string) => void
   disconnect: () => void
   emit: (eventName: string, data: any) => void
   on: (eventName: string, func: () => void) => void

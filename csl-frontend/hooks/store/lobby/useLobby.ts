@@ -15,7 +15,9 @@ export const useLobby = () => {
   const dispatch = useDispatch()
   const { setLoading, createdLobby, leavedLobby, deletedLobby } =
     bindActionCreators(ActionCreators.actions, dispatch)
-  const { isLoading, currentLobby } = useTypesSelector((state) => state.lobby)
+  const { isLoading, currentLobby, lobbies } = useTypesSelector(
+    (state) => state.lobby
+  )
 
   const createLobby = useCallback(async (options: GameSettings) => {
     setLoading()
@@ -38,5 +40,12 @@ export const useLobby = () => {
     deletedLobby(lobby)
   }, [])
 
-  return { isLoading, currentLobby, createLobby, leaveLobby, deleteLobby }
+  return {
+    isLoading,
+    currentLobby,
+    createLobby,
+    leaveLobby,
+    deleteLobby,
+    lobbies,
+  }
 }
